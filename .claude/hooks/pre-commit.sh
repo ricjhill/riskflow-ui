@@ -1,0 +1,40 @@
+#!/bin/bash
+# Hook: pre-commit
+# Runs on: PreToolUse (Bash) — only triggers on git commit
+# Purpose: Block commit unless vitest, tsc, eslint, and prettier pass.
+
+COMMAND=$(/usr/bin/python3 -c "import json,sys; print(json.load(sys.stdin).get('tool_input',{}).get('command',''))" 2>/dev/null || true)
+
+if [[ ! "$COMMAND" =~ ^git\ commit ]]; then
+  exit 0
+fi
+
+cd "$CLAUDE_PROJECT_DIR" || exit 0
+
+echo "vitest..." >&2
+npm test 2>&1 | tail -5 >&2
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "vitest failed" >&2
+  exit 2
+fi
+
+echo "tsc..." >&2
+npx tsc -b 2>&1 | tail -5 >&2
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "tsc failed" >&2
+  exit 2
+fi
+
+echo "eslint..." >&2
+npm run lint 2>&1 | tail -5 >&2
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "eslint failed" >&2
+  exit 2
+fi
+
+echo "prettier..." >&2
+npm run format:check 2>&1 | tail -5 >&2
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "prettier format check failed" >&2
+  exit 2
+fi
