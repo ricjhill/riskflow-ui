@@ -9,7 +9,17 @@ if [[ ! "$COMMAND" =~ ^git\ commit ]]; then
   exit 0
 fi
 
-cd "$CLAUDE_PROJECT_DIR" || exit 0
+# Detect repo root from the command's working directory.
+# CLAUDE_PROJECT_DIR may point to a different repo when multiple
+# working directories are configured, so resolve the actual repo.
+REPO_ROOT=$(git -C "${CLAUDE_WORKING_DIR:-$CLAUDE_PROJECT_DIR}" rev-parse --show-toplevel 2>/dev/null)
+UI_ROOT=$(cd "$(dirname "$0")/../.." && pwd)
+
+if [[ "$REPO_ROOT" != "$UI_ROOT" ]]; then
+  exit 0
+fi
+
+cd "$UI_ROOT" || exit 0
 
 echo "vitest..." >&2
 npm test 2>&1 | tail -5 >&2
