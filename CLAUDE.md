@@ -91,8 +91,8 @@ Dependencies point inward: features use components/hooks/api, never the reverse.
 - **UI:** Runs on port `3000` (nginx serving Vite build).
 - nginx proxies API routes (`/sessions`, `/schemas`, `/sheets`, etc.) to the `api` service on port `8000`.
 - `VITE_API_URL` is set to empty string at build time so the client uses relative URLs; nginx handles proxying.
-- The `ui` service is defined in the riskflow repo's `docker-compose.yml` alongside `api`, `gui`, and `redis`.
-- Start everything from the riskflow repo: `docker compose up -d`
+- `docker-compose.yml` includes `ui`, `api` (built from `../riskflow`), and `redis`.
+- Start everything: `docker compose up -d`
 
 ---
 
