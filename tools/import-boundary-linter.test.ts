@@ -114,6 +114,21 @@ describe('resolveImportLayer', () => {
     const result = resolveImportLayer('./other', '/project/src/types/api.ts')
     expect(result).toEqual({ layer: 'types', featureName: null })
   })
+
+  it('resolves @/ alias import to the correct layer', () => {
+    const result = resolveImportLayer('@/api/client', '/project/src/features/foo/Bar.tsx')
+    expect(result).toEqual({ layer: 'api', featureName: null })
+  })
+
+  it('resolves @/ alias import to hooks/', () => {
+    const result = resolveImportLayer('@/hooks/useSession', '/project/src/features/foo/Bar.tsx')
+    expect(result).toEqual({ layer: 'hooks', featureName: null })
+  })
+
+  it('resolves @/ alias import to features/ with featureName', () => {
+    const result = resolveImportLayer('@/features/other/Foo', '/project/src/features/mine/Bar.tsx')
+    expect(result).toEqual({ layer: 'features', featureName: 'other' })
+  })
 })
 
 describe('checkFile', () => {
@@ -162,6 +177,18 @@ describe('checkFile', () => {
       path.join(tmpDir, 'src', 'components', 'Button.tsx'),
       `import { Theme } from '../types/theme'\n`,
     )
+
+    // features/alpha importing @/features/beta — CROSS-FEATURE VIOLATION via alias
+    fs.writeFileSync(
+      path.join(tmpDir, 'src', 'features', 'alpha', 'AliasViolation.tsx'),
+      `import { Beta } from '@/features/beta/Beta'\n`,
+    )
+
+    // features/alpha importing @/components/Button — ALLOWED via alias
+    fs.writeFileSync(
+      path.join(tmpDir, 'src', 'features', 'alpha', 'AliasAllowed.tsx'),
+      `import { Button } from '@/components/Button'\n`,
+    )
   })
 
   afterAll(() => {
@@ -206,6 +233,20 @@ describe('checkFile', () => {
 
   it('returns empty array for files outside src/', () => {
     const violations = checkFile(path.join(tmpDir, 'tools', 'something.ts'))
+    expect(violations).toHaveLength(0)
+  })
+
+  it('detects cross-feature imports via @/ alias', () => {
+    const violations = checkFile(
+      path.join(tmpDir, 'src', 'features', 'alpha', 'AliasViolation.tsx'),
+    )
+    expect(violations).toHaveLength(1)
+    expect(violations[0].currentLayer).toBe('features/alpha')
+    expect(violations[0].importedLayer).toBe('features/beta')
+  })
+
+  it('allows valid @/ alias imports (no false positives)', () => {
+    const violations = checkFile(path.join(tmpDir, 'src', 'features', 'alpha', 'AliasAllowed.tsx'))
     expect(violations).toHaveLength(0)
   })
 })
