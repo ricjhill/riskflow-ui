@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { buildNodes, buildEdges, confidenceColor } from './graph-utils'
+import { buildNodes, buildEdges, confidenceColor, applySnap } from './graph-utils'
 import type { ColumnMapping } from '@/types/api'
+import type { Edge } from '@xyflow/react'
 
 describe('buildNodes', () => {
   it('creates positioned source and target nodes', () => {
@@ -70,5 +71,33 @@ describe('confidenceColor', () => {
 
   it('returns none for 0', () => {
     expect(confidenceColor(0)).toBe('none')
+  })
+})
+
+describe('applySnap', () => {
+  const existingEdges: Edge[] = [
+    {
+      id: 'edge-col1-field1',
+      source: 'source-col1',
+      target: 'target-field1',
+      type: 'riskFlow',
+      data: { confidence: 0.95 },
+    },
+  ]
+
+  it('adds a new mapping at confidence 1.0', () => {
+    const result = applySnap(existingEdges, 'col2', 'field2')
+    expect(result).toHaveLength(2)
+    const newEdge = result.find((e) => e.id === 'edge-col2-field2')
+    expect(newEdge).toBeDefined()
+    expect(newEdge!.data?.confidence).toBe(1.0)
+  })
+
+  it('replaces existing mapping to the same target (1:1 constraint)', () => {
+    const result = applySnap(existingEdges, 'col2', 'field1')
+    expect(result).toHaveLength(1)
+    expect(result[0].source).toBe('source-col2')
+    expect(result[0].target).toBe('target-field1')
+    expect(result[0].data?.confidence).toBe(1.0)
   })
 })

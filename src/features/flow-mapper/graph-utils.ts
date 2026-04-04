@@ -65,3 +65,16 @@ export function confidenceColor(score: number): ConfidenceLevel {
   if (score > 0) return 'low'
   return 'none'
 }
+
+export function applySnap(edges: Edge[], sourceHeader: string, targetField: string): Edge[] {
+  // Remove any existing edge to this target (1:1 constraint)
+  const filtered = edges.filter((e) => e.target !== `target-${targetField}`)
+  const newEdge: Edge = {
+    id: `edge-${sourceHeader}-${targetField}`,
+    source: `source-${sourceHeader}`,
+    target: `target-${targetField}`,
+    type: 'riskFlow',
+    data: { confidence: 1.0 },
+  }
+  return [...filtered, newEdge]
+}
