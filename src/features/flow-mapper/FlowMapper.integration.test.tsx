@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, it, expect } from 'vitest'
+import { mockFetch } from '@/test/mocks'
 import FlowMapper from './FlowMapper'
 
 function renderFlowMapper() {
@@ -13,6 +14,7 @@ function renderFlowMapper() {
 
 describe('FlowMapper', () => {
   it('renders stepper with Upload as active step', () => {
+    mockFetch({ schemas: [] })
     renderFlowMapper()
 
     const steps = screen.getAllByRole('listitem')
