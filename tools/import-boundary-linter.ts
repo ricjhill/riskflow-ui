@@ -85,6 +85,20 @@ export function resolveImportLayer(
   importSpecifier: string,
   importingFile: string,
 ): { layer: string; featureName: string | null } | null {
+  // Handle @/ path alias (maps to src/)
+  if (importSpecifier.startsWith('@/')) {
+    const relative = importSpecifier.slice(2) // strip "@/"
+    const firstSegment = relative.split('/')[0]
+    if (!LOCAL_LAYERS.has(firstSegment)) return null
+
+    let featureName: string | null = null
+    if (firstSegment === 'features') {
+      const parts = relative.split('/')
+      if (parts.length >= 2) featureName = parts[1]
+    }
+    return { layer: firstSegment, featureName }
+  }
+
   // Skip third-party imports (no leading dot)
   if (!importSpecifier.startsWith('.')) return null
 
@@ -114,6 +128,10 @@ export function resolveImportLayer(
  * Check a single TypeScript file for architecture boundary violations.
  */
 export function checkFile(filePath: string): Violation[] {
+  // Test files are co-located with source but are not production code —
+  // they may import from any layer (e.g. @/test/mocks).
+  if (/\.(test|spec)\.(ts|tsx)$/.test(filePath)) return []
+
   const detectedLayer = detectLayer(filePath)
   if (detectedLayer === null) return []
 

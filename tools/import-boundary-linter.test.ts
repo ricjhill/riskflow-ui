@@ -114,6 +114,21 @@ describe('resolveImportLayer', () => {
     const result = resolveImportLayer('./other', '/project/src/types/api.ts')
     expect(result).toEqual({ layer: 'types', featureName: null })
   })
+
+  it('resolves @/ alias import to the correct layer', () => {
+    const result = resolveImportLayer('@/api/client', '/project/src/features/foo/Bar.tsx')
+    expect(result).toEqual({ layer: 'api', featureName: null })
+  })
+
+  it('resolves @/ alias import to hooks/', () => {
+    const result = resolveImportLayer('@/hooks/useSession', '/project/src/features/foo/Bar.tsx')
+    expect(result).toEqual({ layer: 'hooks', featureName: null })
+  })
+
+  it('resolves @/ alias import to features/ with featureName', () => {
+    const result = resolveImportLayer('@/features/other/Foo', '/project/src/features/mine/Bar.tsx')
+    expect(result).toEqual({ layer: 'features', featureName: 'other' })
+  })
 })
 
 describe('checkFile', () => {
