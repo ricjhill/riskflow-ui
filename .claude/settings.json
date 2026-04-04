@@ -17,7 +17,11 @@
       "Bash(ls:*)",
       "Bash(ls)"
     ],
-    "deny": ["Edit(package-lock.json)", "Edit(.env)", "Bash(git push --force:*)"]
+    "deny": [
+      "Edit(package-lock.json)",
+      "Edit(.env)",
+      "Bash(git push --force:*)"
+    ]
   },
   "hooks": {
     "PreToolUse": [
@@ -33,6 +37,11 @@
             "type": "command",
             "command": ".claude/hooks/check-boundaries.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/security-scan.sh",
+            "timeout": 120
           },
           {
             "type": "command",
@@ -69,6 +78,11 @@
           {
             "type": "command",
             "command": ".claude/hooks/post-failure-context.sh",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-rename-check.sh",
             "timeout": 10
           }
         ]
