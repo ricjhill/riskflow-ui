@@ -37,7 +37,8 @@ Dependencies point inward: features use components/hooks/api, never the reverse.
 - Strict mode (`strict: true` in tsconfig).
 - No `any` — use `unknown` and narrow, or define proper types.
 - Path aliases: `@/*` maps to `src/*`. Use `@/api/client` instead of `../../api/client`.
-- API response types live in `src/types/` and are shared between `src/api/` and features.
+- API types are auto-generated from `openapi.json`. Run `npm run generate:types` after backend changes.
+- `src/types/api.ts` is a barrel file that re-exports generated types with stable names. Add type aliases there, not in `api.generated.ts`.
 - Props interfaces are co-located with their components, not in a separate file.
 - Use `interface` for object shapes, `type` for unions and intersections.
 
