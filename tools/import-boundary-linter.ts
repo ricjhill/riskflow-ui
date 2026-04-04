@@ -20,7 +20,7 @@ import * as fs from 'fs'
 
 // Layers and what each layer is allowed to import from (project-local only).
 // Third-party and Node built-in imports are always allowed.
-const LAYER_RULES: Record<string, Set<string>> = {
+export const LAYER_RULES: Record<string, Set<string>> = {
   types: new Set(['types']),
   api: new Set(['api', 'types']),
   hooks: new Set(['hooks', 'api', 'types']),
@@ -41,7 +41,7 @@ const FIX_SUGGESTIONS: Record<string, string> = {
     'FIX: components/ may only import from hooks/, api/, and types/. Components are generic -- no feature-specific logic.',
 }
 
-interface Violation {
+export interface Violation {
   file: string
   line: number
   currentLayer: string
@@ -54,7 +54,7 @@ interface Violation {
  * Determine which architectural layer a file belongs to based on its path
  * relative to src/.
  */
-function detectLayer(filePath: string): string | null {
+export function detectLayer(filePath: string): string | null {
   const srcIndex = filePath.indexOf('src/')
   if (srcIndex === -1) return null
 
@@ -69,7 +69,7 @@ function detectLayer(filePath: string): string | null {
  * Extract the feature name from a file path, e.g.
  * "src/features/flow-mapper/FlowMapper.tsx" -> "flow-mapper"
  */
-function detectFeatureName(filePath: string): string | null {
+export function detectFeatureName(filePath: string): string | null {
   const match = filePath.match(/src\/features\/([^/]+)/)
   return match ? match[1] : null
 }
@@ -81,7 +81,7 @@ function detectFeatureName(filePath: string): string | null {
  *
  * Returns null for third-party packages (react, vitest, etc.)
  */
-function resolveImportLayer(
+export function resolveImportLayer(
   importSpecifier: string,
   importingFile: string,
 ): { layer: string; featureName: string | null } | null {
@@ -113,9 +113,11 @@ function resolveImportLayer(
 /**
  * Check a single TypeScript file for architecture boundary violations.
  */
-function checkFile(filePath: string): Violation[] {
-  const currentLayer = detectLayer(filePath)
-  if (currentLayer === null) return []
+export function checkFile(filePath: string): Violation[] {
+  const detectedLayer = detectLayer(filePath)
+  if (detectedLayer === null) return []
+
+  const currentLayer: string = detectedLayer
 
   const source = fs.readFileSync(filePath, 'utf-8')
   const sourceFile = ts.createSourceFile(filePath, source, ts.ScriptTarget.Latest, true)
@@ -183,10 +185,9 @@ function checkFile(filePath: string): Violation[] {
 }
 
 /**
- * Scan all TypeScript files in src/ for boundary violations.
+ * Scan all TypeScript files under a directory for boundary violations.
  */
-function main(): Violation[] {
-  const srcDir = path.resolve('src')
+export function scanDirectory(srcDir: string): Violation[] {
   const allViolations: Violation[] = []
 
   function walk(dir: string) {
@@ -194,18 +195,32 @@ function main(): Violation[] {
       const full = path.join(dir, entry.name)
       if (entry.isDirectory() && entry.name !== 'node_modules') {
         walk(full)
-      } else if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name) && !entry.name.endsWith('.d.ts')) {
+      } else if (
+        entry.isFile() &&
+        /\.(ts|tsx)$/.test(entry.name) &&
+        !entry.name.endsWith('.d.ts')
+      ) {
         allViolations.push(...checkFile(full))
       }
     }
   }
+
+  walk(srcDir)
+  return allViolations
+}
+
+/**
+ * CLI entry point — scan src/ and exit with appropriate code.
+ */
+function main() {
+  const srcDir = path.resolve('src')
 
   if (!fs.existsSync(srcDir)) {
     console.error('Error: src/ directory not found')
     process.exit(1)
   }
 
-  walk(srcDir)
+  const allViolations = scanDirectory(srcDir)
 
   if (allViolations.length > 0) {
     for (const v of allViolations) {
@@ -219,8 +234,6 @@ function main(): Violation[] {
   } else {
     console.log('Architecture Integrity: GREEN')
   }
-
-  return allViolations
 }
 
 main()
