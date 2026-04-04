@@ -144,18 +144,28 @@ describe('enforce-create-pr.sh', () => {
     expect(result.exitCode).toBe(0)
   })
 
-  it('blocks bare gh pr create without skill footer', () => {
+  it('blocks gh pr create without Agent Review section', () => {
     const result = runHook('enforce-create-pr.sh', {
-      tool_input: { command: 'gh pr create --title "test" --body "no footer"' },
+      tool_input: { command: 'gh pr create --title "test" --body "no review section"' },
     })
     expect(result.exitCode).toBe(2)
     expect(result.stderr).toContain('/create-pr')
+    expect(result.stderr).toContain('Agent Review')
   })
 
-  it('allows gh pr create with Generated with [Claude Code] footer', () => {
+  it('blocks gh pr create with only the footer but no Agent Review', () => {
     const result = runHook('enforce-create-pr.sh', {
       tool_input: {
         command: 'gh pr create --title "test" --body "summary\\n\\nGenerated with [Claude Code]"',
+      },
+    })
+    expect(result.exitCode).toBe(2)
+  })
+
+  it('allows gh pr create with Agent Review section', () => {
+    const result = runHook('enforce-create-pr.sh', {
+      tool_input: {
+        command: 'gh pr create --title "test" --body "## Agent Review\\n\\n### Verdict: APPROVE"',
       },
     })
     expect(result.exitCode).toBe(0)
