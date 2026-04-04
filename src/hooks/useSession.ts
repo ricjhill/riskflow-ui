@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { createSession } from '@/api/client'
-import type { Session } from '@/types/api'
+import { createSession, updateMappings as apiUpdateMappings } from '@/api/client'
+import type { Session, ColumnMapping } from '@/types/api'
 
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null)
@@ -10,5 +10,11 @@ export function useSession() {
     setSession(s)
   }
 
-  return { session, create }
+  async function updateMappings(mappings: ColumnMapping[], unmappedHeaders: string[]) {
+    if (!session) return
+    const s = await apiUpdateMappings(session.id, mappings, unmappedHeaders)
+    setSession(s)
+  }
+
+  return { session, create, updateMappings }
 }
