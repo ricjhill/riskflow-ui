@@ -80,6 +80,12 @@ function UploadStep({ onNext }: UploadStepProps) {
       <button type="button" disabled={!file || uploading} onClick={handleUpload}>
         {uploading ? 'Uploading…' : 'Upload'}
       </button>
+
+      {sessionCtx.error && (
+        <p className="upload-step-error" role="alert">
+          {sessionCtx.error}
+        </p>
+      )}
     </div>
   )
 }

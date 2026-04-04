@@ -106,4 +106,33 @@ describe('UploadStep', () => {
       expect(onNext).toHaveBeenCalled()
     })
   })
+
+  it('shows error message on API failure', async () => {
+    const onNext = vi.fn()
+    mockFetchSequence([
+      { body: { schemas: ['default'] } },
+      {
+        body: {
+          detail: { error_code: 'VALIDATION', message: 'Invalid CSV format', suggestion: '' },
+        },
+        status: 422,
+      },
+    ])
+
+    renderUploadStep(onNext)
+
+    await screen.findByRole('combobox', { name: /schema/i })
+
+    // Select file
+    const fileInput = screen.getByTestId('file-input')
+    const csvFile = new File(['data'], 'bad.csv', { type: 'text/csv' })
+    fireEvent.change(fileInput, { target: { files: [csvFile] } })
+
+    // Click Upload
+    fireEvent.click(screen.getByRole('button', { name: /upload/i }))
+
+    const errorMsg = await screen.findByRole('alert')
+    expect(errorMsg).toHaveTextContent('Invalid CSV format')
+    expect(onNext).not.toHaveBeenCalled()
+  })
 })
