@@ -36,7 +36,7 @@ lines = output.splitlines()
 
 # Gate 2: failure detection
 if tool == 'vitest':
-    if not any('FAIL' in l or 'Tests  ' in l and 'failed' in l for l in lines):
+    if not any('FAIL' in l or re.search(r'(Tests?|Test Files?)\s+\d+\s+failed', l) for l in lines):
         sys.exit(0)
 elif tool == 'tsc':
     if not any(': error TS' in l for l in lines):

@@ -12,4 +12,4 @@ fi
 
 cd "$CLAUDE_PROJECT_DIR" || exit 0
 
-npx prettier --write "$FILE" 2>/dev/null || true
+npx prettier --write "$FILE" || echo "WARNING: prettier failed on $FILE" >&2

@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
-import { execSync, type ExecSyncOptionsWithStringEncoding } from 'child_process'
+import { spawnSync } from 'child_process'
 import * as path from 'path'
 
 const HOOKS_DIR = path.resolve(__dirname, '../../.claude/hooks')
@@ -17,7 +17,8 @@ function runHook(
 ): { exitCode: number; stdout: string; stderr: string } {
   const hookPath = path.join(HOOKS_DIR, hookName)
   const input = JSON.stringify(stdinJson)
-  const opts: ExecSyncOptionsWithStringEncoding = {
+
+  const result = spawnSync('bash', [hookPath], {
     input,
     timeout: 10_000,
     env: {
@@ -28,18 +29,12 @@ function runHook(
     },
     cwd: PROJECT_ROOT,
     encoding: 'utf-8',
-  }
+  })
 
-  try {
-    const stdout = execSync(`bash "${hookPath}"`, opts)
-    return { exitCode: 0, stdout: stdout ?? '', stderr: '' }
-  } catch (err: unknown) {
-    const e = err as { status: number; stdout: string; stderr: string }
-    return {
-      exitCode: e.status ?? 1,
-      stdout: (e.stdout ?? '').toString(),
-      stderr: (e.stderr ?? '').toString(),
-    }
+  return {
+    exitCode: result.status ?? 1,
+    stdout: result.stdout ?? '',
+    stderr: result.stderr ?? '',
   }
 }
 
@@ -103,6 +98,18 @@ describe('security-scan.sh', () => {
       },
     )
     expect(result.exitCode).toBe(0)
+  })
+
+  it('warns when semgrep is not installed', () => {
+    // Run with a restricted PATH that excludes semgrep
+    const result = runHook(
+      'security-scan.sh',
+      { tool_input: { command: 'git commit -m "test"' } },
+      { PATH: '/usr/bin:/bin' },
+    )
+    // The hook may exit 0 (npm audit passes) or exit 2 (npm audit fails)
+    // but regardless, stderr should warn about missing semgrep
+    expect(result.stderr).toContain('semgrep not installed')
   })
 })
 
@@ -203,6 +210,15 @@ describe('post-edit-format.sh', () => {
     })
     expect(result.exitCode).toBe(0)
   })
+
+  it('warns when prettier fails on a file', () => {
+    const result = runHook('post-edit-format.sh', {
+      tool_input: { file_path: '/nonexistent/path/file.ts' },
+    })
+    // Hook should not block (exit 0) but should warn on stderr
+    expect(result.exitCode).toBe(0)
+    expect(result.stderr).toContain('prettier')
+  })
 })
 
 // ─── post-failure-context.sh ────────────────────────────────────────────────
@@ -230,6 +246,30 @@ describe('post-failure-context.sh', () => {
     const json = JSON.parse(result.stdout)
     expect(json.hookSpecificOutput.additionalContext).toContain('FAILURE DIAGNOSTIC')
     expect(json.hookSpecificOutput.additionalContext).toContain('vitest')
+  })
+
+  it('detects vitest failure with single-space summary line', () => {
+    const result = runHook('post-failure-context.sh', {
+      tool_input: { command: 'npm test' },
+      tool_output: [
+        ' FAIL  src/test/smoke.test.ts > smoke test',
+        '  Error: expected 1 to be 2',
+        'Tests 1 failed',
+      ].join('\n'),
+    })
+    expect(result.exitCode).toBe(0)
+    const json = JSON.parse(result.stdout)
+    expect(json.hookSpecificOutput.additionalContext).toContain('FAILURE DIAGNOSTIC')
+  })
+
+  it('detects vitest failure with Test Files summary', () => {
+    const result = runHook('post-failure-context.sh', {
+      tool_input: { command: 'npm test' },
+      tool_output: ['Test Files  1 failed (1)', 'Tests 1 failed (1)'].join('\n'),
+    })
+    expect(result.exitCode).toBe(0)
+    const json = JSON.parse(result.stdout)
+    expect(json.hookSpecificOutput.additionalContext).toContain('FAILURE DIAGNOSTIC')
   })
 
   it('produces no output for passing vitest', () => {
