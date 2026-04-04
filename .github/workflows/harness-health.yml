@@ -1,0 +1,112 @@
+name: Harness Health
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Monday 9 AM UTC
+  workflow_dispatch:
+
+jobs:
+  doc-freshness:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Verify CLAUDE.md architecture tree
+        run: |
+          EXPECTED_DIRS="api components features hooks test types"
+          STALE=0
+          for dir in $EXPECTED_DIRS; do
+            if [ ! -d "src/$dir" ]; then
+              echo "STALE: CLAUDE.md lists src/$dir but directory does not exist"
+              STALE=1
+            fi
+          done
+          # Check for undocumented directories
+          for dir in src/*/; do
+            basename=$(basename "$dir")
+            if ! echo "$EXPECTED_DIRS" | grep -qw "$basename"; then
+              echo "STALE: src/$basename exists but is not listed in CLAUDE.md"
+              STALE=1
+            fi
+          done
+          if [ "$STALE" -eq 1 ]; then
+            echo "Documentation drift detected in CLAUDE.md architecture tree"
+            exit 1
+          fi
+          echo "CLAUDE.md architecture tree: FRESH"
+
+      - name: Check for undocumented env vars
+        run: |
+          grep -roh 'import\.meta\.env\.VITE_[A-Z_]*' src/ 2>/dev/null | sort -u > /tmp/used-vars.txt || true
+          if [ -f .env.example ]; then
+            grep -oh 'VITE_[A-Z_]*' .env.example | sort -u > /tmp/documented-vars.txt
+            UNDOCUMENTED=$(comm -23 /tmp/used-vars.txt /tmp/documented-vars.txt)
+            if [ -n "$UNDOCUMENTED" ]; then
+              echo "STALE: Undocumented env vars: $UNDOCUMENTED"
+              exit 1
+            fi
+          else
+            if [ -s /tmp/used-vars.txt ]; then
+              echo "STALE: VITE_ env vars used but no .env.example exists"
+              exit 1
+            fi
+          fi
+          echo "Environment variables: FRESH"
+
+  code-hygiene:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Architecture boundaries
+        run: npm run lint:boundaries
+
+      - name: Check for any types
+        run: |
+          HITS=$(grep -rn ': any\b\|as any\b' src/ --include='*.ts' --include='*.tsx' || true)
+          if [ -n "$HITS" ]; then
+            echo "WARNING: 'any' types found:"
+            echo "$HITS"
+            exit 1
+          fi
+          echo "No 'any' types found"
+
+      - name: Check for stale patterns
+        run: |
+          FOUND=0
+          TODOS=$(grep -rn 'TODO\|FIXME\|HACK' src/ --include='*.ts' --include='*.tsx' || true)
+          CONSOLE=$(grep -rn 'console\.log' src/ --include='*.ts' --include='*.tsx' | grep -v '.test.' || true)
+          if [ -n "$TODOS" ]; then
+            echo "TODOs/FIXMEs found:"
+            echo "$TODOS"
+            FOUND=1
+          fi
+          if [ -n "$CONSOLE" ]; then
+            echo "console.log in production code:"
+            echo "$CONSOLE"
+            FOUND=1
+          fi
+          if [ "$FOUND" -eq 1 ]; then
+            echo "Stale patterns detected — run /cleanup to address"
+            exit 1
+          fi
+          echo "No stale patterns found"
+
+      - name: Dependency audit
+        run: npm audit --audit-level=high
+
+      - name: Outdated packages
+        run: npm outdated || true
