@@ -66,7 +66,7 @@ Found $REF_COUNT file(s) still referencing '$OLD_NAME':
 $REFS
 
 ACTION REQUIRED: Update these references to use the new filename. Use grep to find exact lines:
-  grep -rn '$OLD_NAME' $(echo $REFS | tr '\n' ' ')"
+  grep -rn '$OLD_NAME' $(echo "$REFS" | tr '\n' ' ')"
 
 # Output JSON so the context is injected back to the model
 /usr/bin/python3 -c "
