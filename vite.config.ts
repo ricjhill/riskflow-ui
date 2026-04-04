@@ -9,6 +9,17 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') },
   },
+  server: {
+    proxy: {
+      '/health': 'http://localhost:8000',
+      '/schemas': 'http://localhost:8000',
+      '/sessions': 'http://localhost:8000',
+      '/sheets': 'http://localhost:8000',
+      '/upload': 'http://localhost:8000',
+      '/corrections': 'http://localhost:8000',
+      '/jobs': 'http://localhost:8000',
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
