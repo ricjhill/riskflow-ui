@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { useSchemas } from '@/hooks/useSchemas'
+import FileUpload from '@/components/FileUpload'
 
 interface UploadStepProps {
   onNext: () => void
@@ -6,6 +8,7 @@ interface UploadStepProps {
 
 function UploadStep({ onNext }: UploadStepProps) {
   const { schemas, loading } = useSchemas()
+  const [file, setFile] = useState<File | null>(null)
 
   return (
     <div className="upload-step">
@@ -18,6 +21,8 @@ function UploadStep({ onNext }: UploadStepProps) {
           </option>
         ))}
       </select>
+
+      <FileUpload onFileSelect={setFile} accept=".csv,.xlsx,.xls" />
     </div>
   )
 }

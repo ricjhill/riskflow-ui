@@ -18,4 +18,13 @@ describe('UploadStep', () => {
     expect(options[1]).toHaveTextContent('default')
     expect(options[2]).toHaveTextContent('marine')
   })
+
+  it('renders FileUpload with csv/xlsx/xls accept', async () => {
+    mockFetch({ schemas: ['default'] })
+
+    render(<UploadStep onNext={() => {}} />)
+
+    const fileInput = await screen.findByTestId('file-input')
+    expect(fileInput).toHaveAttribute('accept', '.csv,.xlsx,.xls')
+  })
 })
