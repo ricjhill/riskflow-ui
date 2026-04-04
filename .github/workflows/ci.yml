@@ -168,3 +168,20 @@ jobs:
 
       - name: Security audit
         run: npm audit --audit-level=high
+
+      - name: Code pattern security scan
+        run: |
+          FOUND=0
+          for pattern in 'dangerouslySetInnerHTML' 'eval(' 'innerHTML' 'document\.write'; do
+            HITS=$(grep -rn "$pattern" src/ --include='*.ts' --include='*.tsx' | grep -v '.test.' || true)
+            if [ -n "$HITS" ]; then
+              echo "SECURITY: Found '$pattern':"
+              echo "$HITS"
+              FOUND=1
+            fi
+          done
+          if [ "$FOUND" -eq 1 ]; then
+            echo "Review the above patterns for XSS vulnerabilities"
+            exit 1
+          fi
+          echo "Code pattern scan: CLEAN"
