@@ -120,4 +120,61 @@ describe('useSession', () => {
 
     expect(result.current.session).toBeNull()
   })
+
+  it('sets error on create failure', async () => {
+    mockFetch(
+      { detail: { error_code: 'VALIDATION', message: 'Bad file', suggestion: '' } },
+      { status: 422 },
+    )
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.error).toBe('Bad file')
+    expect(result.current.session).toBeNull()
+  })
+
+  it('sets error on updateMappings failure', async () => {
+    mockFetchSequence([
+      { body: STUB_SESSION },
+      {
+        body: { detail: { error_code: 'BAD_REQUEST', message: 'Invalid mapping', suggestion: '' } },
+        status: 400,
+      },
+    ])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    await act(async () => {
+      await result.current.updateMappings([], [])
+    })
+
+    expect(result.current.error).toBe('Invalid mapping')
+    // Session should remain unchanged on error
+    expect(result.current.session).toEqual(STUB_SESSION)
+  })
+
+  it('sets error on network failure', async () => {
+    const { mockFetchError } = await import('@/test/mocks')
+    mockFetchError('Network error')
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.error).toBe('Network error')
+    expect(result.current.session).toBeNull()
+  })
 })
