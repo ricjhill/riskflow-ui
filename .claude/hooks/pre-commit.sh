@@ -49,9 +49,4 @@ if [ ${PIPESTATUS[0]} -ne 0 ]; then
   exit 2
 fi
 
-echo "npm audit..." >&2
-npm audit --audit-level=high 2>&1 | tail -10 >&2
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-  echo "npm audit found high-severity vulnerabilities" >&2
-  exit 2
-fi
+# npm audit moved to security-scan.sh (separate hook, separation of concerns)
