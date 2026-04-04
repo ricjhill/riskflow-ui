@@ -44,7 +44,6 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
 
   const nodes = useMemo(() => {
     if (!session) return []
-    const mappedTargets = new Set(edges.map((e) => e.target.replace('target-', '')))
     const mappedSources = new Set(edges.map((e) => e.source.replace('source-', '')))
     const unmapped = session.source_headers.filter((h) => !mappedSources.has(h))
     return buildNodes(
