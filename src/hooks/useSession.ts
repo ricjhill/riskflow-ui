@@ -10,6 +10,7 @@ import type { Session, ColumnMapping } from '@/types/api'
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   async function create(file: File, schema?: string, sheetName?: string): Promise<boolean> {
     setError(null)
@@ -37,11 +38,14 @@ export function useSession() {
   async function finalise() {
     if (!session) return
     setError(null)
+    setLoading(true)
     try {
       const s = await finaliseSession(session.id)
       setSession(s)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -56,5 +60,5 @@ export function useSession() {
     }
   }
 
-  return { session, error, create, updateMappings, finalise, destroy }
+  return { session, error, loading, create, updateMappings, finalise, destroy }
 }
