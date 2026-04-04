@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { mockFetch } from '@/test/mocks'
+import { mockFetch, mockFetchSequence } from '@/test/mocks'
 import UploadStep from './UploadStep'
 
 describe('UploadStep', () => {
@@ -26,5 +26,34 @@ describe('UploadStep', () => {
 
     const fileInput = await screen.findByTestId('file-input')
     expect(fileInput).toHaveAttribute('accept', '.csv,.xlsx,.xls')
+  })
+
+  it('shows sheet picker when an Excel file is selected', async () => {
+    // First call: listSchemas, second call: listSheets
+    mockFetchSequence([
+      { body: { schemas: ['default'] } },
+      { body: { sheets: ['Sheet1', 'Sheet2'] } },
+    ])
+
+    render(<UploadStep onNext={() => {}} />)
+
+    const fileInput = await screen.findByTestId('file-input')
+    const xlsxFile = new File(['data'], 'test.xlsx', {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    })
+    fireEvent.change(fileInput, { target: { files: [xlsxFile] } })
+
+    const sheetSelect = await screen.findByRole('combobox', { name: /sheet/i })
+    expect(sheetSelect).toBeInTheDocument()
+
+    const sheetOptions = await screen.findAllByRole('option')
+    // schema placeholder + default + sheet placeholder + Sheet1 + Sheet2
+    // We need to scope to the sheet select
+    await waitFor(() => {
+      const options = sheetSelect.querySelectorAll('option')
+      expect(options).toHaveLength(3) // placeholder + 2 sheets
+      expect(options[1]).toHaveTextContent('Sheet1')
+      expect(options[2]).toHaveTextContent('Sheet2')
+    })
   })
 })
