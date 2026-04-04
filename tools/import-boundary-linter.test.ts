@@ -177,6 +177,18 @@ describe('checkFile', () => {
       path.join(tmpDir, 'src', 'components', 'Button.tsx'),
       `import { Theme } from '../types/theme'\n`,
     )
+
+    // features/alpha importing @/features/beta — CROSS-FEATURE VIOLATION via alias
+    fs.writeFileSync(
+      path.join(tmpDir, 'src', 'features', 'alpha', 'AliasViolation.tsx'),
+      `import { Beta } from '@/features/beta/Beta'\n`,
+    )
+
+    // features/alpha importing @/components/Button — ALLOWED via alias
+    fs.writeFileSync(
+      path.join(tmpDir, 'src', 'features', 'alpha', 'AliasAllowed.tsx'),
+      `import { Button } from '@/components/Button'\n`,
+    )
   })
 
   afterAll(() => {
@@ -222,6 +234,15 @@ describe('checkFile', () => {
   it('returns empty array for files outside src/', () => {
     const violations = checkFile(path.join(tmpDir, 'tools', 'something.ts'))
     expect(violations).toHaveLength(0)
+  })
+
+  it('detects cross-feature imports via @/ alias', () => {
+    const violations = checkFile(
+      path.join(tmpDir, 'src', 'features', 'alpha', 'AliasViolation.tsx'),
+    )
+    expect(violations).toHaveLength(1)
+    expect(violations[0].currentLayer).toBe('features/alpha')
+    expect(violations[0].importedLayer).toBe('features/beta')
   })
 })
 
