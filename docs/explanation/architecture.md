@@ -7,10 +7,10 @@ RiskFlow UI uses a **feature-based architecture**. Code is organized by what it 
 ```
 src/
   api/               # Typed fetch wrappers for the RiskFlow REST API
-  components/        # Shared UI components (generic, reusable)
+  components/        # Shared UI components (empty — populated as features are built)
   features/
-    flow-mapper/     # Interactive mapping workflow
-  hooks/             # Custom React hooks
+    flow-mapper/     # Interactive mapping workflow (empty — first feature to build)
+  hooks/             # Custom React hooks (empty — populated as features are built)
   types/             # Shared TypeScript types (API response shapes)
   test/              # Test setup and utilities
 ```

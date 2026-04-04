@@ -36,7 +36,7 @@ Open http://localhost:5173. The page hot-reloads on file changes.
 Run the full check suite to confirm everything works:
 
 ```bash
-npm test           # Vitest — should show 1 passed
+npm test           # Vitest — all tests should pass, 0 failed
 npx tsc -b         # TypeScript — should produce no output (clean)
 npm run lint        # ESLint — should produce no output (clean)
 npm run format:check  # Prettier — should say "All matched files use Prettier code style!"
