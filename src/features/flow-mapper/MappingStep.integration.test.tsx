@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { ReactFlowProvider } from '@xyflow/react'
 import MappingStep from './MappingStep'
@@ -21,12 +21,14 @@ const STUB_SESSION: Session = {
   result: null,
 }
 
+const mockUpdateMappings = vi.fn()
+
 vi.mock('./SessionContext', () => ({
   useSessionContext: () => ({
     session: STUB_SESSION,
     error: null,
     create: vi.fn(),
-    updateMappings: vi.fn(),
+    updateMappings: mockUpdateMappings,
     finalise: vi.fn(),
     destroy: vi.fn(),
   }),
@@ -57,5 +59,20 @@ describe('MappingStep', () => {
   it('renders Save Mappings button', () => {
     renderMappingStep()
     expect(screen.getByRole('button', { name: /save/i })).toBeInTheDocument()
+  })
+
+  it('calls updateMappings when Save is clicked', () => {
+    renderMappingStep()
+    mockUpdateMappings.mockClear()
+
+    fireEvent.click(screen.getByRole('button', { name: /save/i }))
+
+    expect(mockUpdateMappings).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        expect.objectContaining({ source_header: 'col1', target_field: 'field1' }),
+        expect.objectContaining({ source_header: 'col2', target_field: 'field2' }),
+      ]),
+      expect.any(Array),
+    )
   })
 })
