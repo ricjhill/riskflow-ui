@@ -38,6 +38,9 @@ jobs:
       - name: Architecture boundary check
         run: npm run lint:boundaries
 
+      - name: Security audit
+        run: npm audit --audit-level=high
+
   docker-build:
     needs: quality
     runs-on: ubuntu-latest
