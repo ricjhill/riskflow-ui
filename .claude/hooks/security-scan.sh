@@ -32,6 +32,9 @@ if [ $? -ne 0 ]; then
 fi
 
 # 2. semgrep — pattern-based scanning (non-blocking if not installed)
+# Note: npm audit also runs in CI (.github/workflows/ci.yml security job).
+# This local check catches issues before commit; CI catches issues from
+# dependency updates that bypass local hooks (e.g., Dependabot PRs).
 if command -v semgrep &> /dev/null; then
   echo "semgrep..." >&2
   OUTPUT=$(semgrep scan --config auto --quiet src/ 2>&1)
@@ -39,6 +42,9 @@ if command -v semgrep &> /dev/null; then
     ERRORS+="SECURITY: semgrep found potential issues:\n$OUTPUT\n"
     ERRORS+="FIX: Review each finding — false positives can be ignored with nosemgrep comment.\n\n"
   fi
+else
+  echo "WARNING: semgrep not installed — skipping pattern-based security scan." >&2
+  echo "Install: pip install semgrep (or brew install semgrep)" >&2
 fi
 
 if [ -n "$ERRORS" ]; then
