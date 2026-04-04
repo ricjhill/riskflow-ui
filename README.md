@@ -1,73 +1,90 @@
-# React + TypeScript + Vite
+# RiskFlow UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React frontend for the [RiskFlow](https://github.com/ricjhill/riskflow) reinsurance data mapping API. Upload bordereaux spreadsheets, review AI-suggested column mappings, edit them, and finalise to validate rows — all through an interactive browser-based workflow.
 
-Currently, two official plugins are available:
+## Documentation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Getting started](docs/tutorials/getting-started.md) — set up the project and run the dev server
+- [Architecture](docs/explanation/architecture.md) — feature-based structure, API integration, data flow
+- [API client reference](docs/reference/api-client.md) — typed fetch wrappers and response types
+- [Full documentation index](docs/index.md) — tutorials, how-to guides, explanations, reference
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 22+
+- The [RiskFlow API](https://github.com/ricjhill/riskflow) running on `http://localhost:8000` (or configure `VITE_API_URL`)
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Docker (recommended)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Starts the UI, API, and Redis together — no separate setup required.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+```bash
+# Requires ../riskflow to exist as a sibling directory
+cp ../riskflow/.env.example ../riskflow/.env
+# Edit ../riskflow/.env and set GROQ_API_KEY=gsk_your_key_here
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+docker compose up -d
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open http://localhost:3000 for the UI, or http://localhost:8000/health for the API.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Local development
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
+
+# Copy environment template
+cp .env.example .env
+
+# Start dev server (assumes RiskFlow API is running on localhost:8000)
+npm run dev
 ```
+
+Open http://localhost:5173.
+
+## Development
+
+```bash
+# Run tests
+npm test
+
+# Type check
+npx tsc -b
+
+# Lint and format
+npm run lint
+npm run format:check
+```
+
+## Architecture
+
+Feature-based. Dependencies point inward: features use components/hooks/api, never the reverse.
+
+```
+src/
+  api/               # Typed fetch wrappers for the RiskFlow REST API
+  components/        # Shared UI components (buttons, tables, layouts)
+  features/
+    flow-mapper/     # Interactive mapping workflow (upload → review → finalise)
+  hooks/             # Custom React hooks
+  types/             # Shared TypeScript types (API response shapes)
+  test/              # Test setup and utilities
+```
+
+## Stack
+
+React 19, TypeScript 5.9, Vite 8, Vitest, ESLint, Prettier
+
+## Workflow
+
+The **Flow Mapper** is the core user workflow:
+
+1. **Upload** — pick a bordereaux file (CSV/XLSX), select a target schema
+2. **Review** — see AI-suggested column mappings with confidence scores
+3. **Edit** — adjust mappings, mark headers as unmapped, add custom target fields
+4. **Finalise** — validate all rows against the schema, see errors and valid records
+
+The UI communicates with the RiskFlow API via typed client functions in `src/api/client.ts`. See the [API client reference](docs/reference/api-client.md) for details.
