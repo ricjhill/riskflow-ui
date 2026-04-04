@@ -57,6 +57,13 @@ describe('pre-commit.sh', () => {
     )
     expect(result.exitCode).toBe(0)
   })
+
+  it('does not trigger on git plumbing commands like commit-tree', () => {
+    const result = runHook('pre-commit.sh', {
+      tool_input: { command: 'git commit-tree abc123' },
+    })
+    expect(result.exitCode).toBe(0)
+  })
 })
 
 // ─── check-boundaries.sh ────────────────────────────────────────────────────
@@ -76,6 +83,13 @@ describe('check-boundaries.sh', () => {
         CLAUDE_PROJECT_DIR: '/tmp/some-other-repo',
       },
     )
+    expect(result.exitCode).toBe(0)
+  })
+
+  it('does not trigger on git plumbing commands like commit-tree', () => {
+    const result = runHook('check-boundaries.sh', {
+      tool_input: { command: 'git commit-tree abc123' },
+    })
     expect(result.exitCode).toBe(0)
   })
 })
@@ -110,6 +124,13 @@ describe('security-scan.sh', () => {
     // The hook may exit 0 (npm audit passes) or exit 2 (npm audit fails)
     // but regardless, stderr should warn about missing semgrep
     expect(result.stderr).toContain('semgrep not installed')
+  })
+
+  it('does not trigger on git plumbing commands like commit-tree', () => {
+    const result = runHook('security-scan.sh', {
+      tool_input: { command: 'git commit-tree abc123' },
+    })
+    expect(result.exitCode).toBe(0)
   })
 })
 

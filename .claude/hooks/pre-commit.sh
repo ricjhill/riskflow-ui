@@ -5,7 +5,7 @@
 
 COMMAND=$(/usr/bin/python3 -c "import json,sys; print(json.load(sys.stdin).get('tool_input',{}).get('command',''))" 2>/dev/null || true)
 
-if [[ ! "$COMMAND" =~ ^git\ commit ]]; then
+if [[ ! "$COMMAND" =~ ^git\ commit(\ |$) ]]; then
   exit 0
 fi
 

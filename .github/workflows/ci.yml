@@ -29,7 +29,7 @@ jobs:
 
       - name: Assert test count floor
         run: |
-          COUNT=$(grep -oP 'tests="\K\d+' reports/unit.xml | head -1)
+          COUNT=$(grep -oP '<testsuites[^>]*tests="\K\d+' reports/unit.xml | head -1)
           FLOOR=50
           echo "Test count: $COUNT (floor: $FLOOR)"
           if [ "$COUNT" -lt "$FLOOR" ]; then
