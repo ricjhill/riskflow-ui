@@ -1,13 +1,37 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mockFetch, mockFetchSequence } from '@/test/mocks'
+import { SessionProvider } from './SessionContext'
 import UploadStep from './UploadStep'
+import type { Session } from '@/types/api'
+
+const STUB_SESSION: Session = {
+  id: 'sess-1',
+  status: 'created',
+  schema_name: 'default',
+  file_path: '/tmp/test.csv',
+  sheet_name: null,
+  source_headers: ['col1', 'col2'],
+  target_fields: ['field1', 'field2'],
+  mappings: [{ source_header: 'col1', target_field: 'field1', confidence: 0.95 }],
+  unmapped_headers: ['col2'],
+  preview_rows: [{ col1: 'a', col2: 'b' }],
+  result: null,
+}
+
+function renderUploadStep(onNext = () => {}) {
+  return render(
+    <SessionProvider>
+      <UploadStep onNext={onNext} />
+    </SessionProvider>,
+  )
+}
 
 describe('UploadStep', () => {
   it('renders schema picker with schema names from API', async () => {
     mockFetch({ schemas: ['default', 'marine'] })
 
-    render(<UploadStep onNext={() => {}} />)
+    renderUploadStep()
 
     const select = await screen.findByRole('combobox', { name: /schema/i })
     expect(select).toBeInTheDocument()
@@ -22,7 +46,7 @@ describe('UploadStep', () => {
   it('renders FileUpload with csv/xlsx/xls accept', async () => {
     mockFetch({ schemas: ['default'] })
 
-    render(<UploadStep onNext={() => {}} />)
+    renderUploadStep()
 
     const fileInput = await screen.findByTestId('file-input')
     expect(fileInput).toHaveAttribute('accept', '.csv,.xlsx,.xls')
@@ -35,7 +59,7 @@ describe('UploadStep', () => {
       { body: { sheets: ['Sheet1', 'Sheet2'] } },
     ])
 
-    render(<UploadStep onNext={() => {}} />)
+    renderUploadStep()
 
     const fileInput = await screen.findByTestId('file-input')
     const xlsxFile = new File(['data'], 'test.xlsx', {
@@ -46,14 +70,40 @@ describe('UploadStep', () => {
     const sheetSelect = await screen.findByRole('combobox', { name: /sheet/i })
     expect(sheetSelect).toBeInTheDocument()
 
-    const sheetOptions = await screen.findAllByRole('option')
-    // schema placeholder + default + sheet placeholder + Sheet1 + Sheet2
-    // We need to scope to the sheet select
     await waitFor(() => {
       const options = sheetSelect.querySelectorAll('option')
       expect(options).toHaveLength(3) // placeholder + 2 sheets
       expect(options[1]).toHaveTextContent('Sheet1')
       expect(options[2]).toHaveTextContent('Sheet2')
+    })
+  })
+
+  it('creates session and calls onNext on upload', async () => {
+    const onNext = vi.fn()
+    // First call: listSchemas, second call: createSession
+    mockFetchSequence([{ body: { schemas: ['default'] } }, { body: STUB_SESSION, status: 201 }])
+
+    renderUploadStep(onNext)
+
+    // Wait for schemas to load
+    await screen.findByRole('combobox', { name: /schema/i })
+
+    // Select schema
+    fireEvent.change(screen.getByRole('combobox', { name: /schema/i }), {
+      target: { value: 'default' },
+    })
+
+    // Select file
+    const fileInput = screen.getByTestId('file-input')
+    const csvFile = new File(['data'], 'test.csv', { type: 'text/csv' })
+    fireEvent.change(fileInput, { target: { files: [csvFile] } })
+
+    // Click Upload
+    const uploadButton = screen.getByRole('button', { name: /upload/i })
+    fireEvent.click(uploadButton)
+
+    await waitFor(() => {
+      expect(onNext).toHaveBeenCalled()
     })
   })
 })
