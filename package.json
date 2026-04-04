@@ -14,7 +14,10 @@
     "preview": "vite preview",
     "lint:boundaries": "tsx tools/import-boundary-linter.ts",
     "generate:types": "openapi-typescript openapi.json -o src/types/api.generated.ts --export-type && prettier --write src/types/api.generated.ts",
-    "sync:openapi": "cp ../riskflow/openapi.json openapi.json && npm run generate:types"
+    "sync:openapi": "cp ../riskflow/openapi.json openapi.json && npm run generate:types",
+    "test:unit": "vitest run src/ --exclude \"**/*.integration.test.*\"",
+    "test:integration": "vitest run integration --outputFile.junit=reports/integration.xml",
+    "test:unit:watch": "vitest src/ --exclude \"**/*.integration.test.*\""
   },
   "dependencies": {
     "react": "^19.2.4",
