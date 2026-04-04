@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { createSession, updateMappings as apiUpdateMappings, finaliseSession } from '@/api/client'
+import {
+  createSession,
+  updateMappings as apiUpdateMappings,
+  finaliseSession,
+  deleteSession,
+} from '@/api/client'
 import type { Session, ColumnMapping } from '@/types/api'
 
 export function useSession() {
@@ -22,5 +27,11 @@ export function useSession() {
     setSession(s)
   }
 
-  return { session, create, updateMappings, finalise }
+  async function destroy() {
+    if (!session) return
+    await deleteSession(session.id)
+    setSession(null)
+  }
+
+  return { session, create, updateMappings, finalise, destroy }
 }

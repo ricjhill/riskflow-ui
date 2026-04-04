@@ -101,4 +101,23 @@ describe('useSession', () => {
     expect(result.current.session!.status).toBe('finalised')
     expect(result.current.session!.result).not.toBeNull()
   })
+
+  it('destroy clears session to null', async () => {
+    mockFetchSequence([{ body: STUB_SESSION }, { body: null, status: 204 }])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.session).not.toBeNull()
+
+    await act(async () => {
+      await result.current.destroy()
+    })
+
+    expect(result.current.session).toBeNull()
+  })
 })
