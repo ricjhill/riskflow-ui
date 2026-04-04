@@ -244,6 +244,11 @@ describe('checkFile', () => {
     expect(violations[0].currentLayer).toBe('features/alpha')
     expect(violations[0].importedLayer).toBe('features/beta')
   })
+
+  it('allows valid @/ alias imports (no false positives)', () => {
+    const violations = checkFile(path.join(tmpDir, 'src', 'features', 'alpha', 'AliasAllowed.tsx'))
+    expect(violations).toHaveLength(0)
+  })
 })
 
 describe('scanDirectory', () => {
