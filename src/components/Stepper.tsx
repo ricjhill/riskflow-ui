@@ -9,8 +9,9 @@ function Stepper({ steps, currentStep }: StepperProps) {
       {steps.map((label, i) => (
         <li
           key={label}
-          className={`stepper-step ${i === currentStep ? 'stepper-step--active' : ''}`}
+          className={`stepper-step ${i === currentStep ? 'stepper-step--active' : ''} ${i < currentStep ? 'stepper-step--completed' : ''}`}
           aria-current={i === currentStep ? 'step' : undefined}
+          data-completed={i < currentStep ? 'true' : undefined}
         >
           <span className="stepper-number">{i + 1}</span>
           <span className="stepper-label">{label}</span>
