@@ -1,68 +1,23 @@
-/** Shared types for the RiskFlow REST API responses. */
+/**
+ * Re-export generated types with the names used across the codebase.
+ * When the backend API changes, regenerate with: npm run generate:types
+ */
+export type { components } from './api.generated'
 
-export interface ColumnMapping {
-  source_header: string
-  target_field: string
-  confidence: number
-}
+type Schemas = import('./api.generated').components['schemas']
 
-export interface MappingResult {
-  mappings: ColumnMapping[]
-  unmapped_headers: string[]
-}
+// Domain types — names match what src/api/client.ts imports
+export type Session = Schemas['MappingSession']
+export type Schema = Schemas['TargetSchema']
+export type ApiError = Schemas['ErrorDetail']
+export type ColumnMapping = Schemas['ColumnMapping']
+export type MappingResult = Schemas['MappingResult']
+export type ConfidenceReport = Schemas['ConfidenceReport']
+export type RowError = Schemas['RowError']
+export type ProcessingResult = Schemas['ProcessingResult']
+export type SchemaField = Schemas['FieldDefinition']
 
-export interface ConfidenceReport {
-  min_confidence: number
-  avg_confidence: number
-  low_confidence_fields: ColumnMapping[]
-  missing_fields: string[]
-}
-
-export interface RowError {
-  row: number
-  error: string
-}
-
-export interface ProcessingResult {
-  mapping: MappingResult
-  confidence_report: ConfidenceReport
-  valid_records: Record<string, unknown>[]
-  invalid_records: Record<string, unknown>[]
-  errors: RowError[]
-}
-
-export interface Session {
-  id: string
-  status: 'created' | 'finalised'
-  schema_name: string
-  file_path: string
-  sheet_name: string | null
-  source_headers: string[]
-  target_fields: string[]
-  mappings: ColumnMapping[]
-  unmapped_headers: string[]
-  preview_rows: Record<string, unknown>[]
-  result: ProcessingResult | null
-}
-
-export interface SchemaField {
-  type: 'string' | 'date' | 'float' | 'currency'
-  required?: boolean
-  not_empty?: boolean
-  non_negative?: boolean
-  allowed_values?: string[]
-}
-
-export interface Schema {
-  name: string
-  fields: Record<string, SchemaField>
-  cross_field_rules?: { earlier: string; later: string }[]
-  slm_hints?: { source_alias: string; target: string }[]
-  fingerprint?: string
-}
-
-export interface ApiError {
-  error_code: string
-  message: string
-  suggestion: string
-}
+// Additional types from the backend
+export type SessionStatus = Schemas['SessionStatus']
+export type DateOrderingRule = Schemas['DateOrderingRule']
+export type SLMHint = Schemas['SLMHint']

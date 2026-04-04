@@ -49,6 +49,11 @@ jobs:
       - name: Architecture boundary check
         run: npm run lint:boundaries
 
+      - name: Verify generated types are up to date
+        run: |
+          npm run generate:types
+          git diff --exit-code src/types/api.generated.ts || (echo "Generated types are stale — run: npm run generate:types" && exit 1)
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7

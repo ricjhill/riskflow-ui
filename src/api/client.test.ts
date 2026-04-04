@@ -97,13 +97,20 @@ describe('getSchema', () => {
 describe('createSchema', () => {
   it('returns name and fingerprint', async () => {
     mockFetch({ name: 'custom', fingerprint: 'abc123' })
-    const result = await createSchema({ name: 'custom', fields: {} })
+    const result = await createSchema({
+      name: 'custom',
+      fields: {},
+      cross_field_rules: [],
+      slm_hints: [],
+    })
     expect(result).toEqual({ name: 'custom', fingerprint: 'abc123' })
   })
 
   it('throws on conflict', async () => {
     mockFetch({ detail: 'Schema already exists' }, { status: 409 })
-    await expect(createSchema({ name: 'default', fields: {} })).rejects.toThrow(ApiResponseError)
+    await expect(
+      createSchema({ name: 'default', fields: {}, cross_field_rules: [], slm_hints: [] }),
+    ).rejects.toThrow(ApiResponseError)
   })
 })
 
