@@ -11,13 +11,15 @@ export function useSession() {
   const [session, setSession] = useState<Session | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  async function create(file: File, schema?: string, sheetName?: string) {
+  async function create(file: File, schema?: string, sheetName?: string): Promise<boolean> {
     setError(null)
     try {
       const s = await createSession(file, schema, sheetName)
       setSession(s)
+      return true
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err))
+      return false
     }
   }
 
