@@ -47,6 +47,12 @@ describe('detectLayer', () => {
   it('returns null for files with no src/ in path', () => {
     expect(detectLayer('lib/utils.ts')).toBeNull()
   })
+
+  it('works with absolute paths (as resolved from path aliases)', () => {
+    expect(detectLayer('/project/src/api/client.ts')).toBe('api')
+    expect(detectLayer('/project/src/components/Button.tsx')).toBe('components')
+    expect(detectLayer('/project/src/features/flow-mapper/FlowMapper.tsx')).toBe('features')
+  })
 })
 
 describe('detectFeatureName', () => {

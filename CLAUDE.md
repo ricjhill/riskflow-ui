@@ -4,7 +4,7 @@
 A React + TypeScript frontend for the RiskFlow reinsurance data mapping API. Provides an interactive Flow Mapper where users upload bordereaux files, review AI-suggested column mappings, edit them, add custom target fields, and finalise to validate rows.
 
 ## Stack
-React 19, TypeScript 5.9, Vite 8, Vitest, ESLint, Prettier
+React 19, TypeScript 5.9, Vite 8, React Router, Vitest, ESLint, Prettier
 
 ---
 
@@ -16,7 +16,6 @@ src/
   components/        # Shared UI components (buttons, tables, layouts)
   features/
     flow-mapper/     # Interactive mapping workflow (upload → review → finalise)
-    schemas/         # Schema list, schema detail, create schema
   hooks/             # Custom React hooks
   types/             # Shared TypeScript types (API response shapes)
   test/              # Test setup and utilities
@@ -37,6 +36,7 @@ Dependencies point inward: features use components/hooks/api, never the reverse.
 ## TypeScript Conventions
 - Strict mode (`strict: true` in tsconfig).
 - No `any` — use `unknown` and narrow, or define proper types.
+- Path aliases: `@/*` maps to `src/*`. Use `@/api/client` instead of `../../api/client`.
 - API response types live in `src/types/` and are shared between `src/api/` and features.
 - Props interfaces are co-located with their components, not in a separate file.
 - Use `interface` for object shapes, `type` for unions and intersections.
