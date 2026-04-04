@@ -17,11 +17,7 @@
       "Bash(ls:*)",
       "Bash(ls)"
     ],
-    "deny": [
-      "Edit(package-lock.json)",
-      "Edit(.env)",
-      "Bash(git push --force:*)"
-    ]
+    "deny": ["Edit(package-lock.json)", "Edit(.env)", "Bash(git push --force:*)"]
   },
   "hooks": {
     "PreToolUse": [
@@ -32,6 +28,11 @@
             "type": "command",
             "command": ".claude/hooks/pre-commit.sh",
             "timeout": 120
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-boundaries.sh",
+            "timeout": 10
           },
           {
             "type": "command",
