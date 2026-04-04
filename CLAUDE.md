@@ -50,6 +50,7 @@ Dependencies point inward: features use components/hooks/api, never the reverse.
 - After green: `npx tsc -b` then `npm run lint`
 - Commit after every green cycle — small loops, frequent commits.
 - Each commit message should reference what the RED/GREEN step was.
+- When planning, structure each PR as numbered TDD loops (see `.claude/rules/tdd-loops.md`).
 
 ## Definition of Done
 - `npm test`
