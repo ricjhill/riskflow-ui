@@ -7,12 +7,11 @@ import { vi } from 'vitest'
 export function mockFetch(response: unknown, options?: { status?: number }) {
   const status = options?.status ?? 200
 
-  return vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-    new Response(JSON.stringify(response), {
-      status,
-      headers: { 'Content-Type': 'application/json' },
-    }),
-  )
+  const body = status === 204 ? null : JSON.stringify(response)
+  const init: ResponseInit =
+    status === 204 ? { status } : { status, headers: { 'Content-Type': 'application/json' } }
+
+  return vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(body, init))
 }
 
 /**
