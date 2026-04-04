@@ -55,6 +55,53 @@ jobs:
           fi
           echo "Environment variables: FRESH"
 
+      - name: Validate README internal links
+        run: |
+          BROKEN=0
+          while IFS= read -r link; do
+            if [ ! -f "$link" ]; then
+              echo "BROKEN LINK: README.md references '$link' but file does not exist"
+              BROKEN=1
+            fi
+          done < <(grep -oP '\[.*?\]\(\K[^)]+' README.md | grep -v '^http' || true)
+          if [ "$BROKEN" -eq 1 ]; then exit 1; fi
+          echo "README links: VALID"
+
+      - name: Validate markdown internal links
+        run: |
+          BROKEN=0
+          for md in $(find docs/ -name '*.md' 2>/dev/null); do
+            while IFS= read -r link; do
+              # Resolve relative to the markdown file's directory
+              DIR=$(dirname "$md")
+              TARGET="$DIR/$link"
+              # Strip any #anchor
+              TARGET=$(echo "$TARGET" | sed 's/#.*//')
+              if [ -n "$TARGET" ] && [ ! -f "$TARGET" ] && [ ! -d "$TARGET" ]; then
+                echo "BROKEN LINK: $md references '$link' but target does not exist"
+                BROKEN=1
+              fi
+            done < <(grep -oP '\[.*?\]\(\K[^)]+' "$md" | grep -v '^http' | grep -v '^#' || true)
+          done
+          if [ "$BROKEN" -eq 1 ]; then exit 1; fi
+          echo "Documentation links: VALID"
+
+      - name: Code pattern security check
+        run: |
+          FOUND=0
+          for pattern in 'dangerouslySetInnerHTML' 'eval(' 'innerHTML' 'document\.write'; do
+            HITS=$(grep -rn "$pattern" src/ --include='*.ts' --include='*.tsx' | grep -v '.test.' || true)
+            if [ -n "$HITS" ]; then
+              echo "SECURITY: Found '$pattern':"
+              echo "$HITS"
+              FOUND=1
+            fi
+          done
+          if [ "$FOUND" -eq 1 ]; then
+            echo "Review the above patterns — run /cleanup to address"
+          fi
+          echo "Code pattern check complete"
+
   code-hygiene:
     runs-on: ubuntu-latest
     permissions:
