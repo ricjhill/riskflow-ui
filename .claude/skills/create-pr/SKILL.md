@@ -23,9 +23,9 @@ Create a PR for the current branch. The code-reviewer agent must approve before 
 Write the full PR body using the template in Phase 4. Do not create the PR yet.
 
 Include:
-- **TDD cycles**: list each red-green-refactor cycle with the test name and what it validated
+- **TDD cycles**: list each RED/GREEN step — what test was written, how it failed, what was implemented to make it pass
 - **Test inventory**: list every test file and its test count from the verbose output
-- **Loop context**: if this PR was created during a loop, note the loop interval and iteration
+- **Loop context**: structured loop metadata (number, name, dependencies, what it unblocks)
 
 ### Phase 3: Agent review (blocking)
 
@@ -45,6 +45,22 @@ gh pr create --base main --title "<short title>" --body "$(cat <<'EOF'
 
 <reviewer output>
 
+## Loop context
+
+- **Loop:** <number> — <name>
+- **Depends on:** Loop <N> (<what it provided>)
+- **Unblocks:** Loop <N> (<what it enables>)
+
+## TDD cycles
+
+1. **RED:** <what test was written and how it failed>
+2. **GREEN:** <what was implemented to make it pass>
+3. <repeat for each cycle>
+
+## Test inventory
+
+<paste full output of npm test -- --reporter=verbose>
+
 ## Checks
 
 | Check | Result |
@@ -54,18 +70,6 @@ gh pr create --base main --title "<short title>" --body "$(cat <<'EOF'
 | eslint | <result> |
 | prettier | <result> |
 | boundaries | <result> |
-
-## TDD Cycles
-
-| Cycle | Test | Validated |
-|-------|------|-----------|
-| <N> | <test name> | <what it proved> |
-
-## Test Inventory
-
-| File | Tests | Status |
-|------|-------|--------|
-| <test file> | <count> | <pass/fail> |
 
 ## Known limitations
 
@@ -79,7 +83,11 @@ EOF
 ## Rules
 
 - **Never create a PR without an APPROVE from the code-reviewer agent**
+- **The reviewer must see the draft PR body** — pass it as part of the review prompt so it can verify accuracy
+- If the reviewer blocks on code issues, fix the code and re-run
+- If the reviewer blocks on PR text accuracy, fix the description and re-run
+- Always run the data-gathering commands fresh — do not rely on earlier output
 - The summary must explain WHY, not just WHAT
-- Known limitations must be honest
+- Test inventory must be the complete verbose output, not a subset
+- Known limitations must be honest — do not hide gaps
 - Verify every claim in the PR body against actual code before pushing
-- Test inventory must list actual tests, not assumed ones

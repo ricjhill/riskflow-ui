@@ -45,9 +45,11 @@ Dependencies point inward: features use components/hooks/api, never the reverse.
 ---
 
 ## TDD Workflow
+- Write the failing test first (RED), then implement just enough to pass (GREEN), then refactor.
 - Baseline: `npm test`
 - After green: `npx tsc -b` then `npm run lint`
-- Commit after every green cycle.
+- Commit after every green cycle — small loops, frequent commits.
+- Each commit message should reference what the RED/GREEN step was.
 
 ## Definition of Done
 - `npm test`
