@@ -95,6 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: read
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v6
