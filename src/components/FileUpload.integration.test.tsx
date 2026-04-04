@@ -32,6 +32,22 @@ describe('FileUpload', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('File type not accepted')
   })
 
+  it('accepts any file when accept prop is omitted', () => {
+    const onFileSelect = vi.fn()
+    render(<FileUpload onFileSelect={onFileSelect} />)
+
+    const file = new File(['data'], 'anything.xyz')
+    const input = screen.getByTestId('file-input')
+    fireEvent.change(input, { target: { files: [file] } })
+
+    expect(onFileSelect).toHaveBeenCalledWith(file)
+  })
+
+  it('displays external error prop', () => {
+    render(<FileUpload onFileSelect={vi.fn()} error="Upload failed" />)
+    expect(screen.getByRole('alert')).toHaveTextContent('Upload failed')
+  })
+
   it('disables input and button when disabled', () => {
     render(<FileUpload onFileSelect={vi.fn()} disabled />)
 

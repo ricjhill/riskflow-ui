@@ -45,11 +45,15 @@ function FileUpload({ onFileSelect, accept, disabled, error }: FileUploadProps) 
   return (
     <div
       className={`file-upload ${dragOver ? 'file-upload--drag-over' : ''} ${disabled ? 'file-upload--disabled' : ''}`}
-      onDragOver={(e) => {
-        e.preventDefault()
-        setDragOver(true)
-      }}
-      onDragLeave={() => setDragOver(false)}
+      onDragOver={
+        disabled
+          ? undefined
+          : (e) => {
+              e.preventDefault()
+              setDragOver(true)
+            }
+      }
+      onDragLeave={disabled ? undefined : () => setDragOver(false)}
       onDrop={disabled ? undefined : handleDrop}
     >
       <p>Drop a file here or click to browse</p>
