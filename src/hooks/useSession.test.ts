@@ -1,0 +1,180 @@
+import { renderHook, act } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
+import { mockFetch, mockFetchSequence } from '@/test/mocks'
+import { useSession } from '@/hooks/useSession'
+import type { Session } from '@/types/api'
+
+const STUB_SESSION: Session = {
+  id: 'sess-1',
+  status: 'created',
+  schema_name: 'default',
+  file_path: '/tmp/test.csv',
+  sheet_name: null,
+  source_headers: ['col1', 'col2'],
+  target_fields: ['field1', 'field2'],
+  mappings: [{ source_header: 'col1', target_field: 'field1', confidence: 0.95 }],
+  unmapped_headers: ['col2'],
+  preview_rows: [{ col1: 'a', col2: 'b' }],
+  result: null,
+}
+
+describe('useSession', () => {
+  it('creates a session from file upload', async () => {
+    mockFetch(STUB_SESSION)
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.session).toEqual(STUB_SESSION)
+    expect(result.current.session!.id).toBe('sess-1')
+  })
+
+  it('updates mappings on existing session', async () => {
+    const updatedSession: Session = {
+      ...STUB_SESSION,
+      mappings: [
+        { source_header: 'col1', target_field: 'field1', confidence: 1.0 },
+        { source_header: 'col2', target_field: 'field2', confidence: 1.0 },
+      ],
+      unmapped_headers: [],
+    }
+
+    mockFetchSequence([{ body: STUB_SESSION }, { body: updatedSession }])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    await act(async () => {
+      await result.current.updateMappings(
+        [
+          { source_header: 'col1', target_field: 'field1', confidence: 1.0 },
+          { source_header: 'col2', target_field: 'field2', confidence: 1.0 },
+        ],
+        [],
+      )
+    })
+
+    expect(result.current.session!.mappings).toHaveLength(2)
+    expect(result.current.session!.unmapped_headers).toEqual([])
+  })
+
+  it('finalise transitions session to finalised with result', async () => {
+    const finalisedSession: Session = {
+      ...STUB_SESSION,
+      status: 'finalised',
+      result: {
+        mapping: { mappings: STUB_SESSION.mappings, unmapped_headers: [] },
+        confidence_report: {
+          min_confidence: 0.95,
+          avg_confidence: 0.95,
+          low_confidence_fields: [],
+          missing_fields: [],
+        },
+        valid_records: [{ field1: 'a' }],
+        invalid_records: [],
+        errors: [],
+      },
+    }
+
+    mockFetchSequence([{ body: STUB_SESSION }, { body: finalisedSession }])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    await act(async () => {
+      await result.current.finalise()
+    })
+
+    expect(result.current.session!.status).toBe('finalised')
+    expect(result.current.session!.result).not.toBeNull()
+  })
+
+  it('destroy clears session to null', async () => {
+    mockFetchSequence([{ body: STUB_SESSION }, { body: null, status: 204 }])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.session).not.toBeNull()
+
+    await act(async () => {
+      await result.current.destroy()
+    })
+
+    expect(result.current.session).toBeNull()
+  })
+
+  it('sets error on create failure', async () => {
+    mockFetch(
+      { detail: { error_code: 'VALIDATION', message: 'Bad file', suggestion: '' } },
+      { status: 422 },
+    )
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.error).toBe('Bad file')
+    expect(result.current.session).toBeNull()
+  })
+
+  it('sets error on updateMappings failure', async () => {
+    mockFetchSequence([
+      { body: STUB_SESSION },
+      {
+        body: { detail: { error_code: 'BAD_REQUEST', message: 'Invalid mapping', suggestion: '' } },
+        status: 400,
+      },
+    ])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    await act(async () => {
+      await result.current.updateMappings([], [])
+    })
+
+    expect(result.current.error).toBe('Invalid mapping')
+    // Session should remain unchanged on error
+    expect(result.current.session).toEqual(STUB_SESSION)
+  })
+
+  it('sets error on network failure', async () => {
+    const { mockFetchError } = await import('@/test/mocks')
+    mockFetchError('Network error')
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.error).toBe('Network error')
+    expect(result.current.session).toBeNull()
+  })
+})
