@@ -3,6 +3,7 @@ import Stepper from '@/components/Stepper'
 import { SessionProvider } from './SessionContext'
 import UploadStep from './UploadStep'
 import MappingStep from './MappingStep'
+import ResultsStep from './ResultsStep'
 
 const STEPS = ['Upload', 'Review', 'Results']
 
@@ -17,7 +18,9 @@ function FlowMapper() {
         {currentStep === 1 && (
           <MappingStep onNext={() => setCurrentStep(2)} onBack={() => setCurrentStep(0)} />
         )}
-        {currentStep === 2 && <p>Results step placeholder</p>}
+        {currentStep === 2 && (
+          <ResultsStep onBack={() => setCurrentStep(1)} onReset={() => setCurrentStep(0)} />
+        )}
       </div>
     </SessionProvider>
   )
