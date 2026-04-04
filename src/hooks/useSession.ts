@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { createSession, updateMappings as apiUpdateMappings } from '@/api/client'
+import { createSession, updateMappings as apiUpdateMappings, finaliseSession } from '@/api/client'
 import type { Session, ColumnMapping } from '@/types/api'
 
 export function useSession() {
@@ -16,5 +16,11 @@ export function useSession() {
     setSession(s)
   }
 
-  return { session, create, updateMappings }
+  async function finalise() {
+    if (!session) return
+    const s = await finaliseSession(session.id)
+    setSession(s)
+  }
+
+  return { session, create, updateMappings, finalise }
 }

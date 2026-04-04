@@ -66,4 +66,39 @@ describe('useSession', () => {
     expect(result.current.session!.mappings).toHaveLength(2)
     expect(result.current.session!.unmapped_headers).toEqual([])
   })
+
+  it('finalise transitions session to finalised with result', async () => {
+    const finalisedSession: Session = {
+      ...STUB_SESSION,
+      status: 'finalised',
+      result: {
+        mapping: { mappings: STUB_SESSION.mappings, unmapped_headers: [] },
+        confidence_report: {
+          min_confidence: 0.95,
+          avg_confidence: 0.95,
+          low_confidence_fields: [],
+          missing_fields: [],
+        },
+        valid_records: [{ field1: 'a' }],
+        invalid_records: [],
+        errors: [],
+      },
+    }
+
+    mockFetchSequence([{ body: STUB_SESSION }, { body: finalisedSession }])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    await act(async () => {
+      await result.current.finalise()
+    })
+
+    expect(result.current.session!.status).toBe('finalised')
+    expect(result.current.session!.result).not.toBeNull()
+  })
 })
