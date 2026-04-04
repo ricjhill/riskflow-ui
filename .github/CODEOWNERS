@@ -1,0 +1,9 @@
+# Default owner for all files
+* @ricjhill
+
+# Critical paths — require explicit review
+.claude/ @ricjhill
+Dockerfile @ricjhill
+docker-compose.yml @ricjhill
+.github/workflows/ @ricjhill
+package.json @ricjhill
