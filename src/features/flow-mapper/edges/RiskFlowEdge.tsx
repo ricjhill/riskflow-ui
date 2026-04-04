@@ -1,4 +1,4 @@
-import { getBezierPath } from '@xyflow/react'
+import { getBezierPath, Position } from '@xyflow/react'
 import { confidenceColor } from '../graph-utils'
 
 interface RiskFlowEdgeProps {
@@ -9,15 +9,23 @@ interface RiskFlowEdgeProps {
   sourceY: number
   targetX: number
   targetY: number
-  sourcePosition: string
-  targetPosition: string
+  sourcePosition: Position
+  targetPosition: Position
   data?: { confidence: number }
 }
 
 const MIN_STROKE = 2
 const MAX_STROKE = 18
 
-function RiskFlowEdge({ sourceX, sourceY, targetX, targetY, data }: RiskFlowEdgeProps) {
+function RiskFlowEdge({
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition,
+  targetPosition,
+  data,
+}: RiskFlowEdgeProps) {
   const confidence = data?.confidence ?? 0
   const strokeWidth = MIN_STROKE + confidence * (MAX_STROKE - MIN_STROKE)
   const level = confidenceColor(confidence)
@@ -27,6 +35,8 @@ function RiskFlowEdge({ sourceX, sourceY, targetX, targetY, data }: RiskFlowEdge
     sourceY,
     targetX,
     targetY,
+    sourcePosition,
+    targetPosition,
     curvature: 0.8,
   })
 

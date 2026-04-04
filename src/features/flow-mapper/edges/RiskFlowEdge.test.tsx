@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { ReactFlowProvider } from '@xyflow/react'
+import { ReactFlowProvider, Position } from '@xyflow/react'
 import RiskFlowEdge from './RiskFlowEdge'
 
 function renderEdge(confidence: number) {
@@ -15,8 +15,8 @@ function renderEdge(confidence: number) {
           sourceY={50}
           targetX={400}
           targetY={50}
-          sourcePosition="right"
-          targetPosition="left"
+          sourcePosition={Position.Right}
+          targetPosition={Position.Left}
           data={{ confidence }}
         />
       </svg>

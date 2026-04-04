@@ -3,7 +3,7 @@ import { ReactFlow } from '@xyflow/react'
 import type { Edge } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useSessionContext } from './SessionContext'
-import { buildNodes, buildEdges, applySnap } from './graph-utils'
+import { buildNodes, buildEdges, applySnap, edgesToMappings } from './graph-utils'
 import SourceHeaderNode from './nodes/SourceHeaderNode'
 import TargetFieldNode from './nodes/TargetFieldNode'
 import RiskFlowEdge from './edges/RiskFlowEdge'
@@ -20,14 +20,6 @@ const edgeTypes = {
 interface MappingStepProps {
   onNext: () => void
   onBack: () => void
-}
-
-function edgesToMappings(edges: Edge[]) {
-  return edges.map((e) => ({
-    source_header: e.source.replace('source-', ''),
-    target_field: e.target.replace('target-', ''),
-    confidence: (e.data?.confidence as number) ?? 1.0,
-  }))
 }
 
 function MappingStep({ onNext, onBack }: MappingStepProps) {

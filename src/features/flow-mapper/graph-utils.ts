@@ -66,6 +66,14 @@ export function confidenceColor(score: number): ConfidenceLevel {
   return 'none'
 }
 
+export function edgesToMappings(edges: Edge[]): ColumnMapping[] {
+  return edges.map((e) => ({
+    source_header: e.source.replace('source-', ''),
+    target_field: e.target.replace('target-', ''),
+    confidence: (e.data?.confidence as number) ?? 1.0,
+  }))
+}
+
 export function applySnap(edges: Edge[], sourceHeader: string, targetField: string): Edge[] {
   // Remove any existing edge to this target (1:1 constraint)
   const filtered = edges.filter((e) => e.target !== `target-${targetField}`)
