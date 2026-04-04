@@ -22,3 +22,7 @@ RiskFlow UI is a React frontend for the RiskFlow reinsurance data mapping API. U
 
 - [API Client](reference/api-client.md) — every exported function, parameters, return types
 - [TypeScript Types](reference/types.md) — all shared interfaces (Session, Schema, ColumnMapping, etc.)
+
+## Presentations
+
+- [Bootstrapping the Frontend Harness](presentations/2026-04-04-bootstrapping-the-frontend-harness.md) — Docker, CI/CD, docs, and the code review loop (4 April 2026)
