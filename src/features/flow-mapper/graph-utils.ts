@@ -46,3 +46,22 @@ export function buildNodes(
 
   return [...sourceNodes, ...targetNodes]
 }
+
+export function buildEdges(mappings: ColumnMapping[]): Edge[] {
+  return mappings.map((m) => ({
+    id: `edge-${m.source_header}-${m.target_field}`,
+    source: `source-${m.source_header}`,
+    target: `target-${m.target_field}`,
+    type: 'riskFlow',
+    data: { confidence: m.confidence },
+  }))
+}
+
+export type ConfidenceLevel = 'high' | 'medium' | 'low' | 'none'
+
+export function confidenceColor(score: number): ConfidenceLevel {
+  if (score >= 0.8) return 'high'
+  if (score >= 0.5) return 'medium'
+  if (score > 0) return 'low'
+  return 'none'
+}
