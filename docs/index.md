@@ -6,7 +6,8 @@ RiskFlow UI is a React frontend for the RiskFlow reinsurance data mapping API. U
 
 ## Tutorials — Learn by doing
 
-- [Getting Started](tutorials/getting-started.md) — set up the project and run the dev server
+- [Run the Full Stack](tutorials/run-the-full-stack.md) — get both repos running with Docker in 5 minutes
+- [Getting Started (Dev Mode)](tutorials/getting-started.md) — set up the project for local development with hot reload
 - [Map a Bordereaux File](tutorials/mapping-workflow.md) — walk through the full upload → review → finalise workflow
 
 ## How-to Guides — Solve a specific problem

@@ -3,18 +3,9 @@ services:
     build: .
     ports:
       - "3000:3000"
-    depends_on:
-      - api
-  api:
-    build: ../riskflow
-    ports:
-      - "8000:8000"
-    env_file: ../riskflow/.env
-    environment:
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - redis
-  redis:
-    image: "redis:alpine"
-    ports:
-      - "6379:6379"
+    networks:
+      - riskflow
+
+networks:
+  riskflow:
+    external: true
