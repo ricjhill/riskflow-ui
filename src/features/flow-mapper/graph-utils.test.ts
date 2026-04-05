@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { buildNodes, buildEdges, confidenceColor, applySnap, edgesToMappings } from './graph-utils'
+import {
+  buildNodes,
+  buildEdges,
+  confidenceColor,
+  applySnap,
+  edgesToMappings,
+  barycenterSort,
+} from './graph-utils'
 import type { ColumnMapping } from '@/types/api'
 import type { Edge } from '@xyflow/react'
 
@@ -153,5 +160,49 @@ describe('edgesToMappings', () => {
     ]
     const mappings = edgesToMappings(edges)
     expect(mappings[0].source_header).toBe('source-premium')
+  })
+})
+
+describe('barycenterSort', () => {
+  it('reorders targets to minimise edge crossings', () => {
+    // Sources in order: A(0), B(1), C(2), D(3)
+    // Mappings: A→T4, B→T3, C→T2, D→T1 — maximum crossings in original target order
+    const sources = ['A', 'B', 'C', 'D']
+    const targets = ['T1', 'T2', 'T3', 'T4']
+    const mappings: ColumnMapping[] = [
+      { source_header: 'A', target_field: 'T4', confidence: 0.9 },
+      { source_header: 'B', target_field: 'T3', confidence: 0.9 },
+      { source_header: 'C', target_field: 'T2', confidence: 0.9 },
+      { source_header: 'D', target_field: 'T1', confidence: 0.9 },
+    ]
+
+    const sorted = barycenterSort(sources, targets, mappings)
+
+    // After sort, targets should be reordered so each target is near its source
+    // T4 connects to A(index 0), T3→B(1), T2→C(2), T1→D(3)
+    // So optimal order: T4, T3, T2, T1
+    expect(sorted).toEqual(['T4', 'T3', 'T2', 'T1'])
+  })
+
+  it('places unconnected targets at the end', () => {
+    const sources = ['A', 'B']
+    const targets = ['T1', 'T2', 'T3']
+    const mappings: ColumnMapping[] = [
+      { source_header: 'A', target_field: 'T2', confidence: 0.9 },
+      { source_header: 'B', target_field: 'T1', confidence: 0.9 },
+      // T3 has no mapping
+    ]
+
+    const sorted = barycenterSort(sources, targets, mappings)
+
+    // T2→A(0), T1→B(1), T3 unconnected → end
+    expect(sorted[0]).toBe('T2')
+    expect(sorted[1]).toBe('T1')
+    expect(sorted[2]).toBe('T3')
+  })
+
+  it('returns original order when no mappings exist', () => {
+    const sorted = barycenterSort(['A', 'B'], ['T1', 'T2'], [])
+    expect(sorted).toEqual(['T1', 'T2'])
   })
 })

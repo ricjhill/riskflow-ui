@@ -74,6 +74,51 @@ export function edgesToMappings(edges: Edge[]): ColumnMapping[] {
   }))
 }
 
+/**
+ * Reorder targets so each target is near its connected source,
+ * minimising edge crossings in a bipartite graph layout.
+ *
+ * For each target, compute the average index of its connected
+ * sources (the "barycenter"). Sort targets by this value.
+ * Unconnected targets go to the end in their original order.
+ */
+export function barycenterSort(
+  sources: string[],
+  targets: string[],
+  mappings: ColumnMapping[],
+): string[] {
+  if (mappings.length === 0) return [...targets]
+
+  const sourceIndex = new Map(sources.map((s, i) => [s, i]))
+
+  // Build target → list of connected source indices
+  const targetConnections = new Map<string, number[]>()
+  for (const m of mappings) {
+    const si = sourceIndex.get(m.source_header)
+    if (si === undefined) continue
+    const list = targetConnections.get(m.target_field) ?? []
+    list.push(si)
+    targetConnections.set(m.target_field, list)
+  }
+
+  // Compute barycenter (average source index) for each target
+  const connected: { target: string; bary: number }[] = []
+  const unconnected: string[] = []
+
+  for (const t of targets) {
+    const indices = targetConnections.get(t)
+    if (indices && indices.length > 0) {
+      const avg = indices.reduce((a, b) => a + b, 0) / indices.length
+      connected.push({ target: t, bary: avg })
+    } else {
+      unconnected.push(t)
+    }
+  }
+
+  connected.sort((a, b) => a.bary - b.bary)
+  return [...connected.map((c) => c.target), ...unconnected]
+}
+
 export function applySnap(edges: Edge[], sourceHeader: string, targetField: string): Edge[] {
   // Remove any existing edge to this target (1:1 constraint)
   const filtered = edges.filter((e) => e.target !== `target-${targetField}`)
