@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.9
+
+### Other Changes
+
+- Merge pull request #76 from ricjhill/docs/session-log
+- Add session log: versioning, UI polish, and provisioning
+
+
 ## 0.1.8
 
 ### Other Changes
