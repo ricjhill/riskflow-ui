@@ -23,10 +23,17 @@ jobs:
       - name: Build Docker image
         run: docker build -t ghcr.io/${{ github.repository }}/riskflow-ui:latest .
 
-      - name: Tag with commit SHA
-        run: docker tag ghcr.io/${{ github.repository }}/riskflow-ui:latest ghcr.io/${{ github.repository }}/riskflow-ui:${{ github.sha }}
+      - name: Read version from VERSION file
+        id: version
+        run: echo "version=$(cat VERSION | tr -d '[:space:]')" >> $GITHUB_OUTPUT
+
+      - name: Tag with commit SHA and semver
+        run: |
+          docker tag ghcr.io/${{ github.repository }}/riskflow-ui:latest ghcr.io/${{ github.repository }}/riskflow-ui:${{ github.sha }}
+          docker tag ghcr.io/${{ github.repository }}/riskflow-ui:latest ghcr.io/${{ github.repository }}/riskflow-ui:v${{ steps.version.outputs.version }}
 
       - name: Push Docker image
         run: |
           docker push ghcr.io/${{ github.repository }}/riskflow-ui:latest
           docker push ghcr.io/${{ github.repository }}/riskflow-ui:${{ github.sha }}
+          docker push ghcr.io/${{ github.repository }}/riskflow-ui:v${{ steps.version.outputs.version }}

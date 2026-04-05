@@ -53,7 +53,7 @@ Review the changes on the current branch (compared to main) and produce a struct
 
 ### Version (blocking)
 - Does the PR body contain a `## Version` section with `Tested against: <version>`?
-- Run `node -e "console.log(require('./package.json').version)"` and verify the claimed version matches.
+- Run `cat VERSION` and verify the claimed version matches.
 - If the version section is missing or the version is wrong, flag as BLOCK.
 
 ### PR Description Accuracy (blocking)
