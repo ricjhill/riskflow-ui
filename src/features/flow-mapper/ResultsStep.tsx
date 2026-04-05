@@ -71,6 +71,30 @@ function ResultsStep({ onBack, onReset }: ResultsStepProps) {
           <div className="results-step-confidence">
             <p>Min confidence: {result.confidence_report.min_confidence}</p>
             <p>Avg confidence: {result.confidence_report.avg_confidence}</p>
+
+            {result.confidence_report.low_confidence_fields.length > 0 && (
+              <>
+                <h3>Low Confidence Mappings</h3>
+                <table className="results-step-low-confidence">
+                  <thead>
+                    <tr>
+                      <th>Source</th>
+                      <th>Target</th>
+                      <th>Confidence</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.confidence_report.low_confidence_fields.map((m) => (
+                      <tr key={`${m.source_header}-${m.target_field}`}>
+                        <td>{m.source_header}</td>
+                        <td>{m.target_field}</td>
+                        <td>{m.confidence}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
           </div>
         </>
       )}

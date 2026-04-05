@@ -120,8 +120,8 @@ describe('ResultsStep', () => {
   it('displays confidence report after finalisation', () => {
     currentSession = FINALISED_SESSION
     renderResultsStep()
-    expect(screen.getByText(/0\.6/)).toBeInTheDocument()
-    expect(screen.getByText(/0\.81/)).toBeInTheDocument()
+    expect(screen.getByText(/Min confidence: 0\.6/)).toBeInTheDocument()
+    expect(screen.getByText(/Avg confidence: 0\.81/)).toBeInTheDocument()
   })
 
   it('calls destroy and onReset when Start New is clicked', async () => {
@@ -145,6 +145,14 @@ describe('ResultsStep', () => {
     currentError = 'Finalisation failed: invalid mappings'
     renderResultsStep()
     expect(screen.getByRole('alert')).toHaveTextContent('Finalisation failed: invalid mappings')
+  })
+
+  it('displays low confidence fields after finalisation', () => {
+    currentSession = FINALISED_SESSION
+    renderResultsStep()
+    expect(screen.getByText('col3')).toBeInTheDocument()
+    expect(screen.getByText('field3')).toBeInTheDocument()
+    expect(screen.getByText('0.6')).toBeInTheDocument()
   })
 
   it('hides Finalise button when session is already finalised', () => {
