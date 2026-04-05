@@ -1,0 +1,113 @@
+.api-status {
+  padding: 24px 32px;
+  text-align: left;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.api-status h2 {
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+.api-status h2:not(:first-child) {
+  margin-top: 32px;
+}
+
+/* --- Check table --- */
+.api-status-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.api-status-table th {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--border);
+  color: var(--text-h);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.api-status-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.api-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.api-status-badge--ok {
+  background: color-mix(in srgb, var(--confidence-high) 15%, transparent);
+  color: var(--confidence-high);
+}
+
+.api-status-badge--error {
+  background: color-mix(in srgb, var(--confidence-low) 15%, transparent);
+  color: var(--confidence-low);
+}
+
+.api-status-badge--pending {
+  background: color-mix(in srgb, var(--confidence-medium) 15%, transparent);
+  color: var(--confidence-medium);
+}
+
+/* --- Schema details --- */
+.api-status details {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.api-status summary {
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-h);
+  background: var(--code-bg);
+  font-size: 14px;
+}
+
+.api-status summary:hover {
+  background: var(--accent-bg);
+}
+
+.api-status details[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+
+.api-status details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.api-status details li {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text);
+}
+
+.api-status details li:last-child {
+  border-bottom: none;
+}
+
+.api-status details li strong {
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-size: 13px;
+}

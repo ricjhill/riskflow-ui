@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react'
 import { health, listSchemas, getSchema, ApiResponseError } from '@/api/client'
 import type { Schema } from '@/types/api'
+import './ApiStatus.css'
 
 interface StatusCheck {
   name: string
   status: 'pending' | 'ok' | 'error'
   detail: string
+}
+
+function StatusBadge({ status }: { status: StatusCheck['status'] }) {
+  const label = status === 'pending' ? '...' : status === 'ok' ? 'OK' : 'FAIL'
+  return <span className={`api-status-badge api-status-badge--${status}`}>{label}</span>
 }
 
 function ApiStatus() {
@@ -42,9 +48,9 @@ function ApiStatus() {
   }, [])
 
   return (
-    <section>
+    <section className="api-status">
       <h2>API Connection</h2>
-      <table>
+      <table className="api-status-table">
         <thead>
           <tr>
             <th>Check</th>
@@ -56,7 +62,9 @@ function ApiStatus() {
           {checks.map((c) => (
             <tr key={c.name}>
               <td>{c.name}</td>
-              <td>{c.status === 'pending' ? '...' : c.status === 'ok' ? 'OK' : 'FAIL'}</td>
+              <td>
+                <StatusBadge status={c.status} />
+              </td>
               <td>{c.detail}</td>
             </tr>
           ))}
