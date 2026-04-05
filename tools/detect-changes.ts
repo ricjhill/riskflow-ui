@@ -71,7 +71,7 @@ const SECTION_MAP: Record<string, string> = {
 }
 
 export function generateChangelog(
-  oldVersion: string,
+  _oldVersion: string,
   newVersion: string,
   messages: string[],
 ): string {
