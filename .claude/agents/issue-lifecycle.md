@@ -96,7 +96,7 @@ gh issue comment <N> --repo ricjhill/riskflow-ui --body "$(cat <<EOF
 **Step:** <what the user did>
 **Screenshot:** (taken at $(date -Iseconds))
 
-![issue-<N>-<description>](https://raw.githubusercontent.com/ricjhill/riskflow-ui/main/docs/evidence/issue-<N>-<description>.png)
+![issue-<N>-<description>](https://github.com/ricjhill/riskflow-ui/blob/main/docs/evidence/issue-<N>-<description>.png?raw=true)
 
 **Browser state:**
 - URL: $(uvx rodney url)
@@ -143,7 +143,7 @@ Include evidence in issue comments using this format:
 - <expected state>
 
 **Screenshot:**
-![issue-<N>-<description>](https://raw.githubusercontent.com/ricjhill/riskflow-ui/main/docs/evidence/issue-<N>-<description>.png)
+![issue-<N>-<description>](https://github.com/ricjhill/riskflow-ui/blob/main/docs/evidence/issue-<N>-<description>.png?raw=true)
 ```
 
 ### 5. Issue Audit
