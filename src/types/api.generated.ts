@@ -429,6 +429,18 @@ export type components = {
       allowed_values?: string[] | null
     }
     /**
+     * FieldError
+     * @description A validation error for a specific field within a row.
+     */
+    FieldError: {
+      /** Field */
+      field: string
+      /** Message */
+      message: string
+      /** Value */
+      value?: string | null
+    }
+    /**
      * FieldType
      * @enum {string}
      */
@@ -507,10 +519,9 @@ export type components = {
      * ProcessingResult
      * @description Full result of processing a spreadsheet: mapping + row validation.
      *
-     *     valid_records uses list[dict] instead of list[RiskRecord] because
-     *     the record model is dynamic — field names depend on the active
-     *     TargetSchema. Dicts are the natural serialization format and avoid
-     *     complex generic type gymnastics.
+     *     valid_records uses list[dict] because the record model is dynamic —
+     *     field names depend on the active TargetSchema. Dicts are the natural
+     *     serialization format and avoid complex generic type gymnastics.
      */
     ProcessingResult: {
       mapping: components['schemas']['MappingResult']
@@ -535,6 +546,11 @@ export type components = {
       row: number
       /** Error */
       error: string
+      /**
+       * Field Errors
+       * @default []
+       */
+      field_errors: components['schemas']['FieldError'][]
     }
     /**
      * SLMHint
