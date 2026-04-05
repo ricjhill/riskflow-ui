@@ -7,6 +7,7 @@ RiskFlow UI is a React frontend for the RiskFlow reinsurance data mapping API. U
 ## Tutorials — Learn by doing
 
 - [Getting Started](tutorials/getting-started.md) — set up the project and run the dev server
+- [Map a Bordereaux File](tutorials/mapping-workflow.md) — walk through the full upload → review → finalise workflow
 
 ## How-to Guides — Solve a specific problem
 
@@ -15,10 +16,14 @@ RiskFlow UI is a React frontend for the RiskFlow reinsurance data mapping API. U
 
 ## Explanation — Understand how it works
 
-- [Architecture](explanation/architecture.md) — feature-based structure, dependency rules, data flow
+- [Architecture](explanation/architecture.md) — feature-based structure, dependency rules, styling, routing
+- [Flow Mapper](explanation/flow-mapper.md) — the mapping workflow, graph construction, two-click snap interaction
 - [API Integration](explanation/api-integration.md) — how the UI talks to the RiskFlow backend
 
 ## Reference — Look up details
 
 - [API Client](reference/api-client.md) — every exported function, parameters, return types
 - [TypeScript Types](reference/types.md) — all shared interfaces (Session, Schema, ColumnMapping, etc.)
+- [Hooks](reference/hooks.md) — useSession, useSchemas
+- [Components](reference/components.md) — Stepper, FileUpload, SchemaList, ApiStatus
+- [Tooling](reference/tooling.md) — import boundary linter, version bump, change detection, release workflow
