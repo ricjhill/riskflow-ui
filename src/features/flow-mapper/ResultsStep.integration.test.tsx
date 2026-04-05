@@ -146,4 +146,10 @@ describe('ResultsStep', () => {
     renderResultsStep()
     expect(screen.getByRole('alert')).toHaveTextContent('Finalisation failed: invalid mappings')
   })
+
+  it('hides Finalise button when session is already finalised', () => {
+    currentSession = FINALISED_SESSION
+    renderResultsStep()
+    expect(screen.queryByRole('button', { name: /finalise/i })).not.toBeInTheDocument()
+  })
 })
