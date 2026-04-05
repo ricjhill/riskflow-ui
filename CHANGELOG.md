@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.4
+
+### Other Changes
+
+- Merge pull request #63 from ricjhill/feature/upload-filename-spinner
+- Add spinner CSS animation for upload button (#40)
+- RED/GREEN: Upload button shows spinner during upload (#40)
+- Add filename display styling to FileUpload (#35)
+- RED/GREEN: UploadStep shows selected filename (#35)
+- RED/GREEN: FileUpload displays selected filename (#35)
+
+
 ## 0.1.3
 
 ### Other Changes
