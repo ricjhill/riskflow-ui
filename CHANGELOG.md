@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.7
+
+### Other Changes
+
+- Merge pull request #74 from ricjhill/feature/sync-field-error-types
+- Sync OpenAPI types: add FieldError and RowError.field_errors
+
+
 ## 0.1.6
 
 ### Other Changes
