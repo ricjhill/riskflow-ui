@@ -152,6 +152,87 @@ describe('UploadStep', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
+  it('shows read-only summary when session exists', async () => {
+    // Simulate: session already created, user navigated Back
+    const onNext = vi.fn()
+    mockFetchSequence([{ body: { schemas: ['default'] } }, { body: STUB_SESSION, status: 201 }])
+
+    renderUploadStep(onNext)
+
+    // Complete the upload flow to create a session
+    await screen.findByRole('combobox', { name: /schema/i })
+    const fileInput = screen.getByTestId('file-input')
+    fireEvent.change(fileInput, {
+      target: { files: [new File(['data'], 'test.csv', { type: 'text/csv' })] },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /upload/i }))
+    await waitFor(() => expect(onNext).toHaveBeenCalled())
+
+    // Now the session exists — the summary should be visible
+    expect(screen.getByText('default')).toBeInTheDocument()
+    expect(screen.getByText('test.csv')).toBeInTheDocument()
+    expect(screen.queryByTestId('file-input')).not.toBeInTheDocument()
+  })
+
+  it('re-upload button destroys session and shows upload form', async () => {
+    const onNext = vi.fn()
+    mockFetchSequence([
+      { body: { schemas: ['default'] } },
+      { body: STUB_SESSION, status: 201 },
+      { body: null, status: 204 }, // deleteSession
+      { body: { schemas: ['default'] } }, // re-fetch schemas after remount
+    ])
+
+    renderUploadStep(onNext)
+
+    // Create session
+    await screen.findByRole('combobox', { name: /schema/i })
+    const fileInput = screen.getByTestId('file-input')
+    fireEvent.change(fileInput, {
+      target: { files: [new File(['data'], 'test.csv', { type: 'text/csv' })] },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /upload/i }))
+    await waitFor(() => expect(onNext).toHaveBeenCalled())
+
+    // Now in summary view — click Re-upload
+    fireEvent.click(screen.getByRole('button', { name: /re-upload/i }))
+
+    // Should return to upload form
+    await waitFor(() => {
+      expect(screen.getByTestId('file-input')).toBeInTheDocument()
+    })
+  })
+
+  it('shows error in summary when re-upload fails', async () => {
+    const onNext = vi.fn()
+    mockFetchSequence([
+      { body: { schemas: ['default'] } },
+      { body: STUB_SESSION, status: 201 },
+      { body: { detail: 'Session locked' }, status: 409 }, // deleteSession fails
+    ])
+
+    renderUploadStep(onNext)
+
+    // Create session
+    await screen.findByRole('combobox', { name: /schema/i })
+    const fileInput = screen.getByTestId('file-input')
+    fireEvent.change(fileInput, {
+      target: { files: [new File(['data'], 'test.csv', { type: 'text/csv' })] },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /upload/i }))
+    await waitFor(() => expect(onNext).toHaveBeenCalled())
+
+    // Click Re-upload — DELETE fails
+    fireEvent.click(screen.getByRole('button', { name: /re-upload/i }))
+
+    // Error should show in summary view
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument()
+    })
+    // Summary should still be visible (session not destroyed)
+    expect(screen.queryByTestId('file-input')).not.toBeInTheDocument()
+  })
+
   it('shows error message on API failure', async () => {
     const onNext = vi.fn()
     mockFetchSequence([
