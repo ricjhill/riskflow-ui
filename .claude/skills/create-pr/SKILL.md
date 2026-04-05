@@ -17,6 +17,7 @@ Create a PR for the current branch. The code-reviewer agent must approve before 
 5. Run `npm run lint 2>&1 | tail -3` for ESLint status
 6. Run `npm run format:check 2>&1 | tail -3` for Prettier status
 7. Run `npm run lint:boundaries 2>&1 | tail -3` for architecture boundary status
+8. Run `node -e "console.log(require('./package.json').version)"` to capture the current version
 
 ### Phase 2: Draft PR body
 
@@ -40,6 +41,10 @@ gh pr create --base main --title "<short title>" --body "$(cat <<'EOF'
 ## Summary
 
 <what changed, why, key decisions>
+
+## Version
+
+Tested against: `<version from package.json>`
 
 ## Agent Review
 
