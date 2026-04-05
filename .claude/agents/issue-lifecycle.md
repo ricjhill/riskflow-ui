@@ -162,7 +162,7 @@ When asked to audit:
 
 ## How to find context
 
-- **Current version:** `node -e "console.log(require('./package.json').version)"` — include in all issue comments and evidence
+- **Current version:** `cat VERSION` — include in all issue comments and evidence
 - **Plan files:** `ls .claude/plans/` — read active plans for design decisions
 - **PR bodies:** `gh pr view <N> --json body` — check for issue references
 - **Git log:** `git log --oneline --grep="Closes #N"` — find commits that reference issues
