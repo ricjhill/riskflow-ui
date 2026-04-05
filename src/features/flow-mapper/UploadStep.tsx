@@ -59,9 +59,14 @@ function UploadStep({ onNext }: UploadStepProps) {
               </>
             )}
           </dl>
-          <button type="button" onClick={onNext}>
-            Continue
-          </button>
+          <div className="upload-step-summary-actions">
+            <button type="button" onClick={sessionCtx.destroy}>
+              Re-upload
+            </button>
+            <button type="button" onClick={onNext}>
+              Continue
+            </button>
+          </div>
         </div>
       </div>
     )
