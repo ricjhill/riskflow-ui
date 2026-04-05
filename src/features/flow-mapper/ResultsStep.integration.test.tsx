@@ -74,9 +74,17 @@ beforeEach(() => {
   mockDestroy.mockClear()
 })
 
-function renderResultsStep(props?: { onBack?: () => void; onReset?: () => void }) {
+function renderResultsStep(props?: {
+  onBack?: () => void
+  onReset?: () => void
+  onFinalised?: () => void
+}) {
   return render(
-    <ResultsStep onBack={props?.onBack ?? (() => {})} onReset={props?.onReset ?? (() => {})} />,
+    <ResultsStep
+      onBack={props?.onBack ?? (() => {})}
+      onReset={props?.onReset ?? (() => {})}
+      onFinalised={props?.onFinalised}
+    />,
   )
 }
 
@@ -169,6 +177,18 @@ describe('ResultsStep', () => {
     expect(screen.getByText('col3')).toBeInTheDocument()
     expect(screen.getByText('field3')).toBeInTheDocument()
     expect(screen.getByText('0.6')).toBeInTheDocument()
+  })
+
+  it('calls onFinalised after successful finalisation', async () => {
+    mockFinalise.mockImplementation(() => {
+      currentSession = FINALISED_SESSION
+    })
+    const onFinalised = vi.fn()
+    renderResultsStep({ onFinalised })
+    fireEvent.click(screen.getByRole('button', { name: /finalise/i }))
+    await waitFor(() => {
+      expect(onFinalised).toHaveBeenCalled()
+    })
   })
 
   it('hides Finalise button when session is already finalised', () => {

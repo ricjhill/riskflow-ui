@@ -4,9 +4,10 @@ import type { ProcessingResult } from '@/types/api'
 interface ResultsStepProps {
   onBack: () => void
   onReset: () => void
+  onFinalised?: () => void
 }
 
-function ResultsStep({ onBack, onReset }: ResultsStepProps) {
+function ResultsStep({ onBack, onReset, onFinalised }: ResultsStepProps) {
   const { session, error, loading, finalise, destroy } = useSessionContext()
 
   if (!session) return <p>No session loaded.</p>
@@ -38,7 +39,13 @@ function ResultsStep({ onBack, onReset }: ResultsStepProps) {
       )}
 
       {!isFinalised && !loading && (
-        <button type="button" onClick={finalise}>
+        <button
+          type="button"
+          onClick={async () => {
+            await finalise()
+            onFinalised?.()
+          }}
+        >
           Finalise
         </button>
       )}
