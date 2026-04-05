@@ -27,8 +27,12 @@ export function buildNodes(
 ): Node[] {
   const unmappedSet = new Set(unmappedHeaders)
   const connectedSet = new Set(mappings.map((m) => m.target_field))
+
+  // Reorder targets to minimise edge crossings
+  const sortedTargets = barycenterSort(sourceHeaders, targetFields, mappings)
+
   const sourceYs = layoutColumn(sourceHeaders.length)
-  const targetYs = layoutColumn(targetFields.length)
+  const targetYs = layoutColumn(sortedTargets.length)
 
   const sourceNodes: Node[] = sourceHeaders.map((header, i) => ({
     id: `source-${header}`,
@@ -37,7 +41,7 @@ export function buildNodes(
     data: { label: header, unmapped: unmappedSet.has(header) },
   }))
 
-  const targetNodes: Node[] = targetFields.map((field, i) => ({
+  const targetNodes: Node[] = sortedTargets.map((field, i) => ({
     id: `target-${field}`,
     type: 'targetField',
     position: { x: COLUMN_GAP, y: targetYs[i] },

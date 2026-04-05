@@ -38,6 +38,26 @@ describe('buildNodes', () => {
     // Y positions are spaced
     expect(sources[0].position.y).toBeLessThan(sources[1].position.y)
   })
+
+  it('reorders target nodes using barycenter heuristic', () => {
+    // Sources: A(0), B(1), C(2) — targets: T1, T2, T3
+    // Mappings: A→T3, B→T2, C→T1 — reversed, maximum crossings in original order
+    const mappings: ColumnMapping[] = [
+      { source_header: 'A', target_field: 'T3', confidence: 0.9 },
+      { source_header: 'B', target_field: 'T2', confidence: 0.9 },
+      { source_header: 'C', target_field: 'T1', confidence: 0.9 },
+    ]
+    const nodes = buildNodes(['A', 'B', 'C'], ['T1', 'T2', 'T3'], mappings, [])
+
+    const targets = nodes.filter((n) => n.type === 'targetField')
+    // After barycenter sort: T3 (connects to A at 0), T2 (B at 1), T1 (C at 2)
+    // So T3 should have lowest Y, T1 highest Y
+    expect(targets[0].data.label).toBe('T3')
+    expect(targets[1].data.label).toBe('T2')
+    expect(targets[2].data.label).toBe('T1')
+    expect(targets[0].position.y).toBeLessThan(targets[1].position.y)
+    expect(targets[1].position.y).toBeLessThan(targets[2].position.y)
+  })
 })
 
 describe('buildEdges', () => {
