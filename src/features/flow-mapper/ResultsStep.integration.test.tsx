@@ -184,6 +184,7 @@ describe('ResultsStep', () => {
   it('calls onFinalised after successful finalisation', async () => {
     mockFinalise.mockImplementation(() => {
       currentSession = FINALISED_SESSION
+      return true
     })
     const onFinalised = vi.fn()
     renderResultsStep({ onFinalised })
@@ -191,6 +192,17 @@ describe('ResultsStep', () => {
     await waitFor(() => {
       expect(onFinalised).toHaveBeenCalled()
     })
+  })
+
+  it('does not call onFinalised when finalisation fails', async () => {
+    mockFinalise.mockReturnValue(false)
+    const onFinalised = vi.fn()
+    renderResultsStep({ onFinalised })
+    fireEvent.click(screen.getByRole('button', { name: /finalise/i }))
+    await waitFor(() => {
+      expect(mockFinalise).toHaveBeenCalled()
+    })
+    expect(onFinalised).not.toHaveBeenCalled()
   })
 
   it('hides Finalise button when session is already finalised', () => {

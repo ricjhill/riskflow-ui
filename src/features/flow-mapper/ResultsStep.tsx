@@ -42,8 +42,8 @@ function ResultsStep({ onBack, onReset, onFinalised }: ResultsStepProps) {
         <button
           type="button"
           onClick={async () => {
-            await finalise()
-            onFinalised?.()
+            const ok = await finalise()
+            if (ok) onFinalised?.()
           }}
         >
           Finalise
