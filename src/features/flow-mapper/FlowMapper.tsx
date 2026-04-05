@@ -4,6 +4,7 @@ import { SessionProvider } from './SessionContext'
 import UploadStep from './UploadStep'
 import MappingStep from './MappingStep'
 import ResultsStep from './ResultsStep'
+import './flow-mapper.css'
 
 const STEPS = ['Upload', 'Review', 'Results']
 
