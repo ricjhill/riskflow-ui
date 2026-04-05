@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.5
+
+### Other Changes
+
+- Merge pull request #72 from ricjhill/feature/results-step-polish
+- Fix onFinalised firing on failure; add negative test
+- Fix TypeScript spread error in missing fields test
+- Add confidence detail styling (#39)
+- RED/GREEN: Stepper shows completed state after finalisation (#41)
+- RED/GREEN: ResultsStep calls onFinalised after finalisation (#41)
+- RED/GREEN: ResultsStep shows missing target fields (#39)
+- RED/GREEN: ResultsStep shows low confidence fields (#39)
+
+
 ## 0.1.4
 
 ### Other Changes
