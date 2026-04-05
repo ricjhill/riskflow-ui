@@ -107,6 +107,51 @@ describe('UploadStep', () => {
     })
   })
 
+  it('displays selected filename after choosing a file', async () => {
+    mockFetch({ schemas: ['default'] })
+    renderUploadStep()
+
+    const fileInput = await screen.findByTestId('file-input')
+    const csvFile = new File(['data'], 'report.csv', { type: 'text/csv' })
+    fireEvent.change(fileInput, { target: { files: [csvFile] } })
+
+    expect(screen.getByText('report.csv')).toBeInTheDocument()
+  })
+
+  it('shows a loading spinner while uploading', async () => {
+    // Schema response resolves, session creation hangs
+    const schemasResponse = new Response(JSON.stringify({ schemas: ['default'] }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+    const pendingPromise = new Promise<Response>(() => {})
+    vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(schemasResponse)
+      .mockReturnValueOnce(pendingPromise)
+
+    renderUploadStep()
+
+    await screen.findByRole('combobox', { name: /schema/i })
+    const fileInput = screen.getByTestId('file-input')
+    fireEvent.change(fileInput, {
+      target: { files: [new File(['data'], 'test.csv', { type: 'text/csv' })] },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /upload/i }))
+
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toBeInTheDocument()
+    })
+  })
+
+  it('does not show a spinner when not uploading', async () => {
+    mockFetch({ schemas: ['default'] })
+    renderUploadStep()
+
+    await screen.findByRole('combobox', { name: /schema/i })
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+
   it('shows error message on API failure', async () => {
     const onNext = vi.fn()
     mockFetchSequence([

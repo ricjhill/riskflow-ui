@@ -57,7 +57,7 @@ function UploadStep({ onNext }: UploadStepProps) {
         ))}
       </select>
 
-      <FileUpload onFileSelect={handleFileSelect} accept=".csv,.xlsx,.xls" />
+      <FileUpload onFileSelect={handleFileSelect} accept=".csv,.xlsx,.xls" fileName={file?.name} />
 
       {sheets.length > 0 && (
         <>
@@ -78,7 +78,14 @@ function UploadStep({ onNext }: UploadStepProps) {
       )}
 
       <button type="button" disabled={!file || uploading} onClick={handleUpload}>
-        {uploading ? 'Uploading…' : 'Upload'}
+        {uploading ? (
+          <>
+            <span className="upload-spinner" role="status" aria-label="Uploading"></span>
+            Uploading…
+          </>
+        ) : (
+          'Upload'
+        )}
       </button>
 
       {sessionCtx.error && (
