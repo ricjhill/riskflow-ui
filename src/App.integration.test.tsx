@@ -35,4 +35,14 @@ describe('App', () => {
     )
     expect(screen.getByRole('link', { name: /riskflow/i })).toBeInTheDocument()
   })
+
+  it('shows NotFound with Header for unknown routes', () => {
+    render(
+      <MemoryRouter initialEntries={['/does-not-exist']}>
+        <App />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /riskflow/i })).toBeInTheDocument()
+  })
 })

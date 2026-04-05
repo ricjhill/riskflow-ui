@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Header from '@/components/Header'
 import ApiStatus from '@/components/ApiStatus'
+import NotFound from '@/components/NotFound'
 import './App.css'
 
 const FlowMapper = lazy(() => import('@/features/flow-mapper/FlowMapper'))
@@ -30,6 +31,7 @@ function App() {
           }
         />
         <Route path="/api-status" element={<ApiStatus />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )
