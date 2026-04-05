@@ -24,4 +24,16 @@ describe('Stepper', () => {
     expect(items[1]).toHaveAttribute('aria-current', 'step')
     expect(items[2]).not.toHaveAttribute('data-completed')
   })
+
+  it('marks all steps as completed when currentStep exceeds step count', () => {
+    render(<Stepper steps={['Upload', 'Review', 'Results']} currentStep={3} />)
+
+    const items = screen.getAllByRole('listitem')
+    expect(items[0]).toHaveAttribute('data-completed', 'true')
+    expect(items[1]).toHaveAttribute('data-completed', 'true')
+    expect(items[2]).toHaveAttribute('data-completed', 'true')
+    items.forEach((item) => {
+      expect(item).not.toHaveAttribute('aria-current')
+    })
+  })
 })
