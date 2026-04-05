@@ -42,7 +42,7 @@ function UploadStep({ onNext }: UploadStepProps) {
 
   if (sessionCtx.session) {
     const s = sessionCtx.session
-    const fileName = s.file_path.split('/').pop() ?? s.file_path
+    const fileName = s.file_path.split(/[/\\]/).pop() ?? s.file_path
     return (
       <div className="upload-step">
         <div className="upload-step-summary">
@@ -59,6 +59,11 @@ function UploadStep({ onNext }: UploadStepProps) {
               </>
             )}
           </dl>
+          {sessionCtx.error && (
+            <p className="upload-step-error" role="alert">
+              {sessionCtx.error}
+            </p>
+          )}
           <div className="upload-step-summary-actions">
             <button type="button" onClick={sessionCtx.destroy}>
               Re-upload
