@@ -48,6 +48,13 @@
   border-color: var(--accent-border);
 }
 
+.file-upload-filename {
+  font-size: 14px;
+  color: var(--text-h);
+  font-weight: 500;
+  margin: 8px 0 0;
+}
+
 .file-upload-error {
   color: var(--confidence-low);
   font-size: 14px;
