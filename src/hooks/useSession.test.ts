@@ -177,4 +177,64 @@ describe('useSession', () => {
     expect(result.current.error).toBe('Network error')
     expect(result.current.session).toBeNull()
   })
+
+  it('sets loading true during finalise and false after', async () => {
+    const finalisedSession = {
+      ...STUB_SESSION,
+      status: 'finalised' as const,
+      result: {
+        valid_records: [],
+        invalid_records: [],
+        errors: [],
+        mapping: { mappings: [], unmapped_headers: [] },
+        confidence_report: {
+          min_confidence: 0,
+          avg_confidence: 0,
+          low_confidence_fields: [],
+          missing_fields: [],
+        },
+      },
+    }
+    mockFetchSequence([{ body: STUB_SESSION }, { body: finalisedSession }])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    expect(result.current.loading).toBe(false)
+
+    await act(async () => {
+      await result.current.finalise()
+    })
+
+    expect(result.current.loading).toBe(false)
+    expect(result.current.session!.status).toBe('finalised')
+  })
+
+  it('sets loading false after finalise failure', async () => {
+    mockFetchSequence([
+      { body: STUB_SESSION },
+      {
+        body: { detail: { error_code: 'CONFLICT', message: 'Already finalised', suggestion: '' } },
+        status: 409,
+      },
+    ])
+
+    const { result } = renderHook(() => useSession())
+
+    const file = new File(['data'], 'test.csv', { type: 'text/csv' })
+    await act(async () => {
+      await result.current.create(file, 'default')
+    })
+
+    await act(async () => {
+      await result.current.finalise()
+    })
+
+    expect(result.current.loading).toBe(false)
+    expect(result.current.error).toBe('Already finalised')
+  })
 })
