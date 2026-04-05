@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.6
+
+### Other Changes
+
+- Merge pull request #73 from ricjhill/feature/upload-back-state
+- Fix destroy error visibility and Windows path handling
+- Add upload summary styling (#36)
+- RED/GREEN: Re-upload button destroys session and shows form (#36)
+- RED/GREEN: UploadStep shows summary when session exists (#36)
+
+
 ## 0.1.5
 
 ### Other Changes
