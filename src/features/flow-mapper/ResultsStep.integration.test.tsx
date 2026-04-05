@@ -147,6 +147,22 @@ describe('ResultsStep', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Finalisation failed: invalid mappings')
   })
 
+  it('displays missing target fields after finalisation', () => {
+    currentSession = {
+      ...FINALISED_SESSION,
+      result: {
+        ...FINALISED_SESSION.result!,
+        confidence_report: {
+          ...FINALISED_SESSION.result!.confidence_report,
+          missing_fields: ['Premium', 'Currency'],
+        },
+      },
+    }
+    renderResultsStep()
+    expect(screen.getByText('Premium')).toBeInTheDocument()
+    expect(screen.getByText('Currency')).toBeInTheDocument()
+  })
+
   it('displays low confidence fields after finalisation', () => {
     currentSession = FINALISED_SESSION
     renderResultsStep()

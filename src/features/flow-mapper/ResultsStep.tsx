@@ -95,6 +95,17 @@ function ResultsStep({ onBack, onReset }: ResultsStepProps) {
                 </table>
               </>
             )}
+
+            {result.confidence_report.missing_fields.length > 0 && (
+              <>
+                <h3>Missing Target Fields</h3>
+                <ul className="results-step-missing-fields">
+                  {result.confidence_report.missing_fields.map((field) => (
+                    <li key={field}>{field}</li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         </>
       )}
