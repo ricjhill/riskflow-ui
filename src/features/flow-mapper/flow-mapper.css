@@ -9,79 +9,6 @@
   max-width: 100%;
 }
 
-/* --- Stepper --- */
-.stepper {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0 0 32px;
-  gap: 0;
-  counter-reset: step;
-}
-
-.stepper-step {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-  padding: 12px 0;
-  color: var(--text);
-  font-size: 15px;
-}
-
-.stepper-step + .stepper-step::before {
-  content: '';
-  position: absolute;
-  left: -50%;
-  right: 50%;
-  top: 22px;
-  height: 2px;
-  background: var(--border);
-  z-index: 0;
-}
-
-.stepper-step--completed + .stepper-step::before {
-  background: var(--confidence-high);
-}
-
-.stepper-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid var(--border);
-  background: var(--bg);
-  color: var(--text);
-  font-weight: 600;
-  font-size: 14px;
-  z-index: 1;
-  flex-shrink: 0;
-}
-
-.stepper-step--active .stepper-number {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
-}
-
-.stepper-step--completed .stepper-number {
-  border-color: var(--confidence-high);
-  background: var(--confidence-high);
-  color: #fff;
-}
-
-.stepper-step--active .stepper-label {
-  color: var(--text-h);
-  font-weight: 600;
-}
-
-.stepper-step--completed .stepper-label {
-  color: var(--confidence-high);
-}
-
 /* --- Upload step --- */
 .upload-step {
   display: flex;
@@ -132,63 +59,6 @@
   color: var(--confidence-low);
   font-size: 14px;
   margin: 0;
-}
-
-/* --- File upload drop zone --- */
-.file-upload {
-  border: 2px dashed var(--border);
-  border-radius: 8px;
-  padding: 24px;
-  text-align: center;
-  transition:
-    border-color 0.2s,
-    background 0.2s;
-  cursor: pointer;
-}
-
-.file-upload:hover {
-  border-color: var(--accent-border);
-}
-
-.file-upload--drag-over {
-  border-color: var(--accent);
-  background: var(--accent-bg);
-}
-
-.file-upload--disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.file-upload p {
-  margin: 0 0 4px;
-}
-
-.file-upload-accept {
-  font-size: 13px;
-  color: var(--text);
-}
-
-.file-upload button {
-  margin-top: 12px;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--text-h);
-  font-size: 14px;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-
-.file-upload button:hover:not(:disabled) {
-  border-color: var(--accent-border);
-}
-
-.file-upload-error {
-  color: var(--confidence-low);
-  font-size: 14px;
-  margin: 8px 0 0;
 }
 
 /* --- Mapping step --- */
@@ -264,11 +134,11 @@
   0%,
   100% {
     border-color: var(--confidence-medium);
-    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--confidence-medium) 30%, transparent);
   }
   50% {
     border-color: var(--confidence-low);
-    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--confidence-medium) 0%, transparent);
   }
 }
 
@@ -331,7 +201,7 @@
   color: var(--confidence-low);
   font-size: 14px;
   padding: 12px;
-  background: rgba(239, 68, 68, 0.1);
+  background: color-mix(in srgb, var(--confidence-low) 10%, transparent);
   border-radius: 6px;
   margin: 0;
 }

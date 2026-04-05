@@ -1,3 +1,5 @@
+import './Stepper.css'
+
 interface StepperProps {
   steps: string[]
   currentStep: number

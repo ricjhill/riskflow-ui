@@ -1,0 +1,55 @@
+.file-upload {
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  cursor: pointer;
+}
+
+.file-upload:hover {
+  border-color: var(--accent-border);
+}
+
+.file-upload--drag-over {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.file-upload--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.file-upload p {
+  margin: 0 0 4px;
+}
+
+.file-upload-accept {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.file-upload button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.file-upload button:hover:not(:disabled) {
+  border-color: var(--accent-border);
+}
+
+.file-upload-error {
+  color: var(--confidence-low);
+  font-size: 14px;
+  margin: 8px 0 0;
+}

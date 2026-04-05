@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import './FileUpload.css'
 
 interface FileUploadProps {
   onFileSelect: (file: File) => void
