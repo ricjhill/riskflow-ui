@@ -35,15 +35,17 @@ export function useSession() {
     }
   }
 
-  async function finalise() {
-    if (!session) return
+  async function finalise(): Promise<boolean> {
+    if (!session) return false
     setError(null)
     setLoading(true)
     try {
       const s = await finaliseSession(session.id)
       setSession(s)
+      return true
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err))
+      return false
     } finally {
       setLoading(false)
     }

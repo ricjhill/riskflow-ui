@@ -20,7 +20,11 @@ function FlowMapper() {
           <MappingStep onNext={() => setCurrentStep(2)} onBack={() => setCurrentStep(0)} />
         )}
         {currentStep === 2 && (
-          <ResultsStep onBack={() => setCurrentStep(1)} onReset={() => setCurrentStep(0)} />
+          <ResultsStep
+            onBack={() => setCurrentStep(1)}
+            onReset={() => setCurrentStep(0)}
+            onFinalised={() => setCurrentStep(3)}
+          />
         )}
       </div>
     </SessionProvider>

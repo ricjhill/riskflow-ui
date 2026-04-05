@@ -4,9 +4,10 @@ import type { ProcessingResult } from '@/types/api'
 interface ResultsStepProps {
   onBack: () => void
   onReset: () => void
+  onFinalised?: () => void
 }
 
-function ResultsStep({ onBack, onReset }: ResultsStepProps) {
+function ResultsStep({ onBack, onReset, onFinalised }: ResultsStepProps) {
   const { session, error, loading, finalise, destroy } = useSessionContext()
 
   if (!session) return <p>No session loaded.</p>
@@ -38,7 +39,13 @@ function ResultsStep({ onBack, onReset }: ResultsStepProps) {
       )}
 
       {!isFinalised && !loading && (
-        <button type="button" onClick={finalise}>
+        <button
+          type="button"
+          onClick={async () => {
+            const ok = await finalise()
+            if (ok) onFinalised?.()
+          }}
+        >
           Finalise
         </button>
       )}
@@ -71,6 +78,41 @@ function ResultsStep({ onBack, onReset }: ResultsStepProps) {
           <div className="results-step-confidence">
             <p>Min confidence: {result.confidence_report.min_confidence}</p>
             <p>Avg confidence: {result.confidence_report.avg_confidence}</p>
+
+            {result.confidence_report.low_confidence_fields.length > 0 && (
+              <>
+                <h3>Low Confidence Mappings</h3>
+                <table className="results-step-low-confidence">
+                  <thead>
+                    <tr>
+                      <th>Source</th>
+                      <th>Target</th>
+                      <th>Confidence</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {result.confidence_report.low_confidence_fields.map((m) => (
+                      <tr key={`${m.source_header}-${m.target_field}`}>
+                        <td>{m.source_header}</td>
+                        <td>{m.target_field}</td>
+                        <td>{m.confidence}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </>
+            )}
+
+            {result.confidence_report.missing_fields.length > 0 && (
+              <>
+                <h3>Missing Target Fields</h3>
+                <ul className="results-step-missing-fields">
+                  {result.confidence_report.missing_fields.map((field) => (
+                    <li key={field}>{field}</li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
         </>
       )}

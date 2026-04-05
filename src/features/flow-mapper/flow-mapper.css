@@ -257,6 +257,40 @@
   font-size: 14px;
 }
 
+.results-step-confidence h3 {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.results-step-low-confidence {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.results-step-low-confidence th {
+  text-align: left;
+  font-weight: 600;
+  padding: 4px 12px 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.results-step-low-confidence td {
+  padding: 4px 12px 4px 0;
+}
+
+.results-step-missing-fields {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+.results-step-missing-fields li {
+  margin-bottom: 2px;
+}
+
 .results-step-actions {
   display: flex;
   gap: 12px;

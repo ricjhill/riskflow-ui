@@ -74,9 +74,17 @@ beforeEach(() => {
   mockDestroy.mockClear()
 })
 
-function renderResultsStep(props?: { onBack?: () => void; onReset?: () => void }) {
+function renderResultsStep(props?: {
+  onBack?: () => void
+  onReset?: () => void
+  onFinalised?: () => void
+}) {
   return render(
-    <ResultsStep onBack={props?.onBack ?? (() => {})} onReset={props?.onReset ?? (() => {})} />,
+    <ResultsStep
+      onBack={props?.onBack ?? (() => {})}
+      onReset={props?.onReset ?? (() => {})}
+      onFinalised={props?.onFinalised}
+    />,
   )
 }
 
@@ -120,8 +128,8 @@ describe('ResultsStep', () => {
   it('displays confidence report after finalisation', () => {
     currentSession = FINALISED_SESSION
     renderResultsStep()
-    expect(screen.getByText(/0\.6/)).toBeInTheDocument()
-    expect(screen.getByText(/0\.81/)).toBeInTheDocument()
+    expect(screen.getByText(/Min confidence: 0\.6/)).toBeInTheDocument()
+    expect(screen.getByText(/Avg confidence: 0\.81/)).toBeInTheDocument()
   })
 
   it('calls destroy and onReset when Start New is clicked', async () => {
@@ -145,6 +153,56 @@ describe('ResultsStep', () => {
     currentError = 'Finalisation failed: invalid mappings'
     renderResultsStep()
     expect(screen.getByRole('alert')).toHaveTextContent('Finalisation failed: invalid mappings')
+  })
+
+  it('displays missing target fields after finalisation', () => {
+    const baseResult = FINALISED_SESSION.result as Record<string, unknown>
+    const baseConfidence = baseResult.confidence_report as Record<string, unknown>
+    currentSession = {
+      ...FINALISED_SESSION,
+      result: {
+        ...baseResult,
+        confidence_report: {
+          ...baseConfidence,
+          missing_fields: ['Premium', 'Currency'],
+        },
+      },
+    }
+    renderResultsStep()
+    expect(screen.getByText('Premium')).toBeInTheDocument()
+    expect(screen.getByText('Currency')).toBeInTheDocument()
+  })
+
+  it('displays low confidence fields after finalisation', () => {
+    currentSession = FINALISED_SESSION
+    renderResultsStep()
+    expect(screen.getByText('col3')).toBeInTheDocument()
+    expect(screen.getByText('field3')).toBeInTheDocument()
+    expect(screen.getByText('0.6')).toBeInTheDocument()
+  })
+
+  it('calls onFinalised after successful finalisation', async () => {
+    mockFinalise.mockImplementation(() => {
+      currentSession = FINALISED_SESSION
+      return true
+    })
+    const onFinalised = vi.fn()
+    renderResultsStep({ onFinalised })
+    fireEvent.click(screen.getByRole('button', { name: /finalise/i }))
+    await waitFor(() => {
+      expect(onFinalised).toHaveBeenCalled()
+    })
+  })
+
+  it('does not call onFinalised when finalisation fails', async () => {
+    mockFinalise.mockReturnValue(false)
+    const onFinalised = vi.fn()
+    renderResultsStep({ onFinalised })
+    fireEvent.click(screen.getByRole('button', { name: /finalise/i }))
+    await waitFor(() => {
+      expect(mockFinalise).toHaveBeenCalled()
+    })
+    expect(onFinalised).not.toHaveBeenCalled()
   })
 
   it('hides Finalise button when session is already finalised', () => {
