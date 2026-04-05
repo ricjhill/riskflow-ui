@@ -48,6 +48,16 @@ describe('FileUpload', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Upload failed')
   })
 
+  it('displays the selected filename when fileName prop is provided', () => {
+    render(<FileUpload onFileSelect={vi.fn()} fileName="data.csv" />)
+    expect(screen.getByText('data.csv')).toBeInTheDocument()
+  })
+
+  it('does not render filename when fileName prop is omitted', () => {
+    const { container } = render(<FileUpload onFileSelect={vi.fn()} />)
+    expect(container.querySelector('.file-upload-filename')).not.toBeInTheDocument()
+  })
+
   it('disables input and button when disabled', () => {
     render(<FileUpload onFileSelect={vi.fn()} disabled />)
 

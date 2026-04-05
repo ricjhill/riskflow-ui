@@ -6,9 +6,10 @@ interface FileUploadProps {
   accept?: string
   disabled?: boolean
   error?: string | null
+  fileName?: string
 }
 
-function FileUpload({ onFileSelect, accept, disabled, error }: FileUploadProps) {
+function FileUpload({ onFileSelect, accept, disabled, error, fileName }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [dragOver, setDragOver] = useState(false)
   const [validationError, setValidationError] = useState<string | null>(null)
@@ -71,6 +72,7 @@ function FileUpload({ onFileSelect, accept, disabled, error }: FileUploadProps) 
       <button type="button" disabled={disabled} onClick={() => inputRef.current?.click()}>
         Choose file
       </button>
+      {fileName && <p className="file-upload-filename">{fileName}</p>}
       {displayError && (
         <p className="file-upload-error" role="alert">
           {displayError}
