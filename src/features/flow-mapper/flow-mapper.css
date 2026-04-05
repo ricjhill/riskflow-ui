@@ -1,0 +1,373 @@
+/* ============================================================
+   Flow Mapper — feature-scoped styles
+   ============================================================ */
+
+/* --- Page shell --- */
+.flow-mapper {
+  padding: 24px 32px;
+  text-align: left;
+  max-width: 100%;
+}
+
+/* --- Stepper --- */
+.stepper {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+  gap: 0;
+  counter-reset: step;
+}
+
+.stepper-step {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  padding: 12px 0;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.stepper-step + .stepper-step::before {
+  content: '';
+  position: absolute;
+  left: -50%;
+  right: 50%;
+  top: 22px;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+
+.stepper-step--completed + .stepper-step::before {
+  background: var(--confidence-high);
+}
+
+.stepper-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 1;
+  flex-shrink: 0;
+}
+
+.stepper-step--active .stepper-number {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.stepper-step--completed .stepper-number {
+  border-color: var(--confidence-high);
+  background: var(--confidence-high);
+  color: #fff;
+}
+
+.stepper-step--active .stepper-label {
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.stepper-step--completed .stepper-label {
+  color: var(--confidence-high);
+}
+
+/* --- Upload step --- */
+.upload-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.upload-step label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.upload-step select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 15px;
+  width: 100%;
+}
+
+.upload-step button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.upload-step button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.upload-step button:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.upload-step-error {
+  color: var(--confidence-low);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* --- File upload drop zone --- */
+.file-upload {
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  cursor: pointer;
+}
+
+.file-upload:hover {
+  border-color: var(--accent-border);
+}
+
+.file-upload--drag-over {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.file-upload--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.file-upload p {
+  margin: 0 0 4px;
+}
+
+.file-upload-accept {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.file-upload button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.file-upload button:hover:not(:disabled) {
+  border-color: var(--accent-border);
+}
+
+.file-upload-error {
+  color: var(--confidence-low);
+  font-size: 14px;
+  margin: 8px 0 0;
+}
+
+/* --- Mapping step --- */
+.mapping-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mapping-step-canvas {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mapping-step-hint {
+  text-align: center;
+  color: var(--accent);
+  font-size: 14px;
+  margin: 0;
+}
+
+.mapping-step-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.mapping-step-actions button {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.mapping-step-actions button:hover {
+  border-color: var(--accent-border);
+}
+
+.mapping-step-actions button:last-child {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.mapping-step-actions button:last-child:hover {
+  opacity: 0.85;
+}
+
+/* --- Source node --- */
+.source-node {
+  padding: 8px 16px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--text-h);
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.source-node--unmapped {
+  border-color: var(--confidence-medium);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    border-color: var(--confidence-medium);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    border-color: var(--confidence-low);
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+  }
+}
+
+/* --- Target node --- */
+.target-node {
+  padding: 8px 16px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--text-h);
+  min-width: 120px;
+  white-space: nowrap;
+}
+
+.target-node--connected {
+  border-left: 4px solid var(--confidence-high);
+}
+
+/* --- Results step --- */
+.results-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 640px;
+}
+
+.results-step h2 {
+  margin: 0;
+}
+
+.results-step button {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.results-step button:hover {
+  border-color: var(--accent-border);
+}
+
+.results-step > button {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  align-self: flex-start;
+}
+
+.results-step > button:hover {
+  opacity: 0.85;
+}
+
+.results-step-error {
+  color: var(--confidence-low);
+  font-size: 14px;
+  padding: 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  margin: 0;
+}
+
+.results-step-errors {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.results-step-errors th {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.results-step-errors td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.results-step-confidence {
+  padding: 16px;
+  background: var(--code-bg);
+  border-radius: 6px;
+}
+
+.results-step-confidence p {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.results-step-actions {
+  display: flex;
+  gap: 12px;
+}
