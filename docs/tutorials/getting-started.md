@@ -5,7 +5,7 @@ Set up the RiskFlow UI project and run the dev server. This takes about 5 minute
 ## Prerequisites
 
 - **Node.js 22+** — check with `node --version`
-- **RiskFlow API** running on `http://localhost:8000` — see the [RiskFlow repo](https://github.com/ricjhill/riskflow) for setup instructions
+- **RiskFlow API** running on `http://localhost:8000` — start with `docker compose up -d` in the [RiskFlow repo](https://github.com/ricjhill/riskflow)
 
 ## 1. Clone and install
 
