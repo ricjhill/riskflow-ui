@@ -4,6 +4,19 @@ import { describe, it, expect } from 'vitest'
 import Header from './Header'
 
 describe('Header', () => {
+  it('renders nav links to Flow Mapper and API Status', () => {
+    render(
+      <MemoryRouter>
+        <Header />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('link', { name: /flow mapper/i })).toHaveAttribute(
+      'href',
+      '/flow-mapper',
+    )
+    expect(screen.getByRole('link', { name: /api status/i })).toHaveAttribute('href', '/api-status')
+  })
+
   it('renders app name linking to home', () => {
     render(
       <MemoryRouter>
