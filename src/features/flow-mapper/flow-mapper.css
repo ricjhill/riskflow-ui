@@ -61,6 +61,41 @@
   margin: 0;
 }
 
+.upload-step-summary {
+  padding: 24px;
+  background: var(--code-bg);
+  border-radius: 8px;
+}
+
+.upload-step-summary h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: var(--text-h);
+}
+
+.upload-step-summary dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 16px;
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+
+.upload-step-summary dt {
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.upload-step-summary dd {
+  margin: 0;
+  color: var(--text);
+}
+
+.upload-step-summary-actions {
+  display: flex;
+  gap: 12px;
+}
+
 /* --- Mapping step --- */
 .mapping-step {
   display: flex;
