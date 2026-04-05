@@ -101,8 +101,8 @@ jobs:
           else
             NEW=$(npx tsx -e "
               import { computeNextVersion } from './tools/bump-version';
-              console.log(computeNextVersion('$CURRENT', '$CHANGE_KIND'));
-            ")
+              console.log(computeNextVersion(process.argv[1], process.argv[2]));
+            " "$CURRENT" "$CHANGE_KIND")
             echo "new_version=$NEW" >> $GITHUB_OUTPUT
             echo "should_release=true" >> $GITHUB_OUTPUT
             echo "$CHANGE_KIND change: $CURRENT → $NEW"
@@ -121,9 +121,9 @@ jobs:
 
           npx tsx -e "
             import { generateChangelog } from './tools/detect-changes';
-            const msgs = JSON.parse(process.argv[1]);
-            console.log(generateChangelog('$CURRENT', '$NEW_VERSION', msgs));
-          " "$COMMITS_JSON" > /tmp/release-notes.md
+            const msgs = JSON.parse(process.argv[3]);
+            console.log(generateChangelog(process.argv[1], process.argv[2], msgs));
+          " "$CURRENT" "$NEW_VERSION" "$COMMITS_JSON" > /tmp/release-notes.md
 
       - name: Update VERSION and package.json
         if: steps.skip.outputs.skip == 'false' && steps.version.outputs.should_release == 'true' && steps.last_tag.outputs.has_previous == 'true'
