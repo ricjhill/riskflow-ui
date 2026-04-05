@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import './Header.css'
 
 function Header() {
@@ -8,8 +8,8 @@ function Header() {
         RiskFlow
       </Link>
       <nav className="header-nav">
-        <Link to="/flow-mapper">Flow Mapper</Link>
-        <Link to="/api-status">API Status</Link>
+        <NavLink to="/flow-mapper">Flow Mapper</NavLink>
+        <NavLink to="/api-status">API Status</NavLink>
       </nav>
     </header>
   )

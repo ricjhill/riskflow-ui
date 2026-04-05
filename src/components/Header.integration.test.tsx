@@ -17,6 +17,19 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: /api status/i })).toHaveAttribute('href', '/api-status')
   })
 
+  it('highlights the active page via aria-current', () => {
+    render(
+      <MemoryRouter initialEntries={['/flow-mapper']}>
+        <Header />
+      </MemoryRouter>,
+    )
+    expect(screen.getByRole('link', { name: /flow mapper/i })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
+    expect(screen.getByRole('link', { name: /api status/i })).not.toHaveAttribute('aria-current')
+  })
+
   it('renders app name linking to home', () => {
     render(
       <MemoryRouter>
