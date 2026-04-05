@@ -51,6 +51,11 @@ Review the changes on the current branch (compared to main) and produce a struct
 - Are there missing type annotations or use of `any`?
 - Are props interfaces co-located with their components?
 
+### Version (blocking)
+- Does the PR body contain a `## Version` section with `Tested against: <version>`?
+- Run `node -e "console.log(require('./package.json').version)"` and verify the claimed version matches.
+- If the version section is missing or the version is wrong, flag as BLOCK.
+
 ### PR Description Accuracy (blocking)
 When a draft PR description is provided, verify every factual claim against the code:
 - **Error paths:** Does the code actually handle the errors described?
@@ -63,6 +68,9 @@ When a draft PR description is provided, verify every factual claim against the 
 
 ```
 ## Verdict: APPROVE | REQUEST_CHANGES | BLOCK
+
+### Version
+- [PASS|FAIL] <version check>
 
 ### Architecture
 - [PASS|FAIL] <check description>

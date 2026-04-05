@@ -26,6 +26,8 @@ For each issue being addressed, post a comment with:
 ```markdown
 ## Design Decision
 
+**Version:** `<version from package.json>`
+
 **Approach:** <what we're doing — 1-2 sentences>
 
 **Why:** <the reasoning — why this approach over alternatives>
@@ -131,6 +133,7 @@ Include evidence in issue comments using this format:
 ```markdown
 ## Evidence
 
+**Version:** `<version from package.json>`
 **Route:** <URL path>
 **Step to reproduce:** <what the user did>
 
@@ -159,6 +162,7 @@ When asked to audit:
 
 ## How to find context
 
+- **Current version:** `node -e "console.log(require('./package.json').version)"` — include in all issue comments and evidence
 - **Plan files:** `ls .claude/plans/` — read active plans for design decisions
 - **PR bodies:** `gh pr view <N> --json body` — check for issue references
 - **Git log:** `git log --oneline --grep="Closes #N"` — find commits that reference issues
