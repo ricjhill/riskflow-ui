@@ -67,8 +67,8 @@ jobs:
           fi
 
           TAG="${{ steps.last_tag.outputs.tag }}"
-          COMMITS=$(git log "${TAG}..HEAD" --format=%s)
-          if [ -z "$COMMITS" ]; then
+          COMMITS_JSON=$(git log "${TAG}..HEAD" --format=%s | jq -R . | jq -s .)
+          if [ "$COMMITS_JSON" = "[]" ]; then
             echo "kind=NONE" >> $GITHUB_OUTPUT
             echo "No commits since $TAG"
             exit 0
@@ -76,9 +76,9 @@ jobs:
 
           KIND=$(npx tsx -e "
             import { classifyCommits } from './tools/detect-changes';
-            const msgs = process.argv.slice(1);
+            const msgs = JSON.parse(process.argv[1]);
             console.log(classifyCommits(msgs));
-          " $COMMITS)
+          " "$COMMITS_JSON")
 
           echo "kind=$KIND" >> $GITHUB_OUTPUT
           echo "Change kind: $KIND"
@@ -119,15 +119,11 @@ jobs:
           # Get commit messages as newline-delimited, pass as JSON array
           COMMITS_JSON=$(git log "${TAG}..HEAD" --format=%s | jq -R . | jq -s .)
 
-          NOTES=$(npx tsx -e "
+          npx tsx -e "
             import { generateChangelog } from './tools/detect-changes';
             const msgs = JSON.parse(process.argv[1]);
             console.log(generateChangelog('$CURRENT', '$NEW_VERSION', msgs));
-          " "$COMMITS_JSON")
-
-          echo "notes<<CHANGELOG_EOF" >> $GITHUB_OUTPUT
-          echo "$NOTES" >> $GITHUB_OUTPUT
-          echo "CHANGELOG_EOF" >> $GITHUB_OUTPUT
+          " "$COMMITS_JSON" > /tmp/release-notes.md
 
       - name: Update VERSION and package.json
         if: steps.skip.outputs.skip == 'false' && steps.version.outputs.should_release == 'true' && steps.last_tag.outputs.has_previous == 'true'
@@ -139,21 +135,18 @@ jobs:
       - name: Update CHANGELOG.md
         if: steps.skip.outputs.skip == 'false' && steps.version.outputs.should_release == 'true' && steps.last_tag.outputs.has_previous == 'true'
         run: |
-          NEW_VERSION="${{ steps.version.outputs.new_version }}"
-          NOTES="${{ steps.changelog.outputs.notes }}"
-
           if [ -f CHANGELOG.md ]; then
             # Prepend new entry after the title line
             {
               head -1 CHANGELOG.md
               echo ""
-              echo "$NOTES"
+              cat /tmp/release-notes.md
               tail -n +2 CHANGELOG.md
             } > CHANGELOG.tmp && mv CHANGELOG.tmp CHANGELOG.md
           else
             echo "# Changelog" > CHANGELOG.md
             echo "" >> CHANGELOG.md
-            echo "$NOTES" >> CHANGELOG.md
+            cat /tmp/release-notes.md >> CHANGELOG.md
           fi
 
       - name: Commit version bump
@@ -177,12 +170,10 @@ jobs:
           NEW_VERSION="${{ steps.version.outputs.new_version }}"
 
           if [ "${{ steps.last_tag.outputs.has_previous }}" = "false" ]; then
-            NOTES="Initial release at v${NEW_VERSION}."
-          else
-            NOTES="${{ steps.changelog.outputs.notes }}"
+            echo "Initial release at v${NEW_VERSION}." > /tmp/release-notes.md
           fi
 
           gh release create "v${NEW_VERSION}" \
             --title "v${NEW_VERSION}" \
-            --notes "${NOTES}" \
+            --notes-file /tmp/release-notes.md \
             --target main
