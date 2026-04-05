@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.8
+
+### Other Changes
+
+- Merge pull request #75 from ricjhill/feature/docker-external-network
+- Add full-stack Docker tutorial and update getting-started docs
+- Use external riskflow network, remove duplicate api/redis services
+
+
 ## 0.1.7
 
 ### Other Changes
