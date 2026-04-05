@@ -57,7 +57,7 @@ function UploadStep({ onNext }: UploadStepProps) {
         ))}
       </select>
 
-      <FileUpload onFileSelect={handleFileSelect} accept=".csv,.xlsx,.xls" />
+      <FileUpload onFileSelect={handleFileSelect} accept=".csv,.xlsx,.xls" fileName={file?.name} />
 
       {sheets.length > 0 && (
         <>

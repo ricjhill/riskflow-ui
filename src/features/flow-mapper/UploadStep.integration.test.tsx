@@ -107,6 +107,17 @@ describe('UploadStep', () => {
     })
   })
 
+  it('displays selected filename after choosing a file', async () => {
+    mockFetch({ schemas: ['default'] })
+    renderUploadStep()
+
+    const fileInput = await screen.findByTestId('file-input')
+    const csvFile = new File(['data'], 'report.csv', { type: 'text/csv' })
+    fireEvent.change(fileInput, { target: { files: [csvFile] } })
+
+    expect(screen.getByText('report.csv')).toBeInTheDocument()
+  })
+
   it('shows error message on API failure', async () => {
     const onNext = vi.fn()
     mockFetchSequence([
