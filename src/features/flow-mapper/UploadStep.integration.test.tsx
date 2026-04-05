@@ -152,6 +152,28 @@ describe('UploadStep', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
+  it('shows read-only summary when session exists', async () => {
+    // Simulate: session already created, user navigated Back
+    const onNext = vi.fn()
+    mockFetchSequence([{ body: { schemas: ['default'] } }, { body: STUB_SESSION, status: 201 }])
+
+    renderUploadStep(onNext)
+
+    // Complete the upload flow to create a session
+    await screen.findByRole('combobox', { name: /schema/i })
+    const fileInput = screen.getByTestId('file-input')
+    fireEvent.change(fileInput, {
+      target: { files: [new File(['data'], 'test.csv', { type: 'text/csv' })] },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /upload/i }))
+    await waitFor(() => expect(onNext).toHaveBeenCalled())
+
+    // Now the session exists — the summary should be visible
+    expect(screen.getByText('default')).toBeInTheDocument()
+    expect(screen.getByText('test.csv')).toBeInTheDocument()
+    expect(screen.queryByTestId('file-input')).not.toBeInTheDocument()
+  })
+
   it('shows error message on API failure', async () => {
     const onNext = vi.fn()
     mockFetchSequence([

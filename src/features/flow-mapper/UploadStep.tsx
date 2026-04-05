@@ -40,6 +40,33 @@ function UploadStep({ onNext }: UploadStepProps) {
     }
   }
 
+  if (sessionCtx.session) {
+    const s = sessionCtx.session
+    const fileName = s.file_path.split('/').pop() ?? s.file_path
+    return (
+      <div className="upload-step">
+        <div className="upload-step-summary">
+          <h3>Uploaded File</h3>
+          <dl>
+            <dt>Schema</dt>
+            <dd>{s.schema_name}</dd>
+            <dt>File</dt>
+            <dd>{fileName}</dd>
+            {s.sheet_name && (
+              <>
+                <dt>Sheet</dt>
+                <dd>{s.sheet_name}</dd>
+              </>
+            )}
+          </dl>
+          <button type="button" onClick={onNext}>
+            Continue
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="upload-step">
       <label htmlFor="schema-select">Schema</label>
