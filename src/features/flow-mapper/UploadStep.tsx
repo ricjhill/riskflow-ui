@@ -78,7 +78,14 @@ function UploadStep({ onNext }: UploadStepProps) {
       )}
 
       <button type="button" disabled={!file || uploading} onClick={handleUpload}>
-        {uploading ? 'Uploading…' : 'Upload'}
+        {uploading ? (
+          <>
+            <span className="upload-spinner" role="status" aria-label="Uploading"></span>
+            Uploading…
+          </>
+        ) : (
+          'Upload'
+        )}
       </button>
 
       {sessionCtx.error && (
