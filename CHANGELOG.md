@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2
+
+### Other Changes
+
+- Merge pull request #61 from ricjhill/feature/docs-update
+- Update Diataxis docs with features, tutorials, and reference guides
+
+
 ## 0.1.1
 
 ### Other Changes
