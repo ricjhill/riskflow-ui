@@ -71,6 +71,7 @@ Dependencies point inward: features use components/hooks/api, never the reverse.
 - RiskFlow API runs on `http://localhost:8000`
 - API docs: see `../riskflow/docs/reference/api.md`
 - Key endpoints:
+  - `GET /health` — API health check
   - `POST /sessions` — upload file, get SLM suggestions
   - `GET /sessions/{id}` — session state
   - `PUT /sessions/{id}/mappings` — edit mappings
@@ -80,6 +81,7 @@ Dependencies point inward: features use components/hooks/api, never the reverse.
   - `GET /schemas` — list schemas
   - `GET /schemas/{name}` — schema detail
   - `POST /schemas` — create runtime schema
+  - `POST /sheets` — list sheet names from uploaded file
 
 ---
 
