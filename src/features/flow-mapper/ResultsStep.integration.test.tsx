@@ -156,12 +156,14 @@ describe('ResultsStep', () => {
   })
 
   it('displays missing target fields after finalisation', () => {
+    const baseResult = FINALISED_SESSION.result as Record<string, unknown>
+    const baseConfidence = baseResult.confidence_report as Record<string, unknown>
     currentSession = {
       ...FINALISED_SESSION,
       result: {
-        ...FINALISED_SESSION.result!,
+        ...baseResult,
         confidence_report: {
-          ...FINALISED_SESSION.result!.confidence_report,
+          ...baseConfidence,
           missing_fields: ['Premium', 'Currency'],
         },
       },
