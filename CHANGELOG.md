@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.11
+
+### Chores
+
+- sync settings allow-list and lockfile version
+
+### Other Changes
+
+- Merge pull request #78 from ricjhill/chore/housekeeping-settings-lockfile
+
+
 ## 0.1.10
 
 ### Other Changes
