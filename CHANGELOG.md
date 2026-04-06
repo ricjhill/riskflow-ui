@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.1.12
+
+### Documentation
+
+- clarify hooks are Claude Code hooks, not git pre-commit
+- sync architecture tree and operating principles with codebase
+
+### Other Changes
+
+- Merge pull request #79 from ricjhill/chore/cleanup-docs
+
+
 ## 0.1.11
 
 ### Chores
