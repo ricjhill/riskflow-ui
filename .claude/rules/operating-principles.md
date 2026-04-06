@@ -14,5 +14,5 @@
 
 ## Mechanical validation before merge
 Every change must pass automated checks before human review:
-- Pre-commit hook: vitest, tsc, eslint, prettier, lint:boundaries
+- Claude Code hooks (`.claude/hooks/`): vitest, tsc, eslint, prettier, lint:boundaries — triggered on `git commit`
 - PR review: all checks green before merge
