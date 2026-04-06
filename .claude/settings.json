@@ -15,7 +15,11 @@
       "Bash(git push)",
       "Bash(gh:*)",
       "Bash(ls:*)",
-      "Bash(ls)"
+      "Bash(ls)",
+      "Bash(lsof -ti:5173)",
+      "Bash(lsof -ti:5174)",
+      "Bash(uvx rodney:*)",
+      "Read(//home/ric/.claude/plans/**)"
     ],
     "deny": [
       "Edit(package-lock.json)",
