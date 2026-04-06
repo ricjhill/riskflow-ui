@@ -61,16 +61,29 @@ function ResultsStep({ onBack, onReset, onFinalised }: ResultsStepProps) {
               <thead>
                 <tr>
                   <th>Row</th>
-                  <th>Error</th>
+                  <th>Field</th>
+                  <th>Message</th>
+                  <th>Value</th>
                 </tr>
               </thead>
               <tbody>
-                {result.errors.map((e) => (
-                  <tr key={`${e.row}-${e.error}`}>
-                    <td>{e.row}</td>
-                    <td>{e.error}</td>
-                  </tr>
-                ))}
+                {result.errors.flatMap((e) =>
+                  e.field_errors && e.field_errors.length > 0
+                    ? e.field_errors.map((fe) => (
+                        <tr key={`${e.row}-${fe.field}`}>
+                          <td>{e.row}</td>
+                          <td>{fe.field}</td>
+                          <td>{fe.message}</td>
+                          <td>{fe.value ?? ''}</td>
+                        </tr>
+                      ))
+                    : [
+                        <tr key={`${e.row}-${e.error}`}>
+                          <td>{e.row}</td>
+                          <td colSpan={3}>{e.error}</td>
+                        </tr>,
+                      ],
+                )}
               </tbody>
             </table>
           )}

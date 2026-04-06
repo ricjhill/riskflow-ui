@@ -36,8 +36,21 @@ const FINALISED_SESSION: Session = {
     valid_records: Array.from({ length: 10 }, (_, i) => ({ id: i })),
     invalid_records: Array.from({ length: 3 }, (_, i) => ({ id: i })),
     errors: [
-      { row: 3, error: 'bad date' },
-      { row: 7, error: 'missing field' },
+      {
+        row: 3,
+        error: 'bad date',
+        field_errors: [
+          { field: 'Inception_Date', message: 'invalid date format', value: '31/13/2024' },
+        ],
+      },
+      {
+        row: 7,
+        error: 'missing field',
+        field_errors: [
+          { field: 'Currency', message: 'not in ISO 4217', value: 'DOLLARS' },
+          { field: 'Sum_Insured', message: 'must be non-negative', value: '-500' },
+        ],
+      },
     ],
   },
 }
@@ -116,13 +129,34 @@ describe('ResultsStep', () => {
     expect(screen.getByText(/3 invalid/i)).toBeInTheDocument()
   })
 
-  it('displays error table after finalisation', () => {
+  it('displays per-field errors after finalisation', () => {
     currentSession = FINALISED_SESSION
     renderResultsStep()
-    expect(screen.getByText('bad date')).toBeInTheDocument()
-    expect(screen.getByText('missing field')).toBeInTheDocument()
-    expect(screen.getByText('3')).toBeInTheDocument()
-    expect(screen.getByText('7')).toBeInTheDocument()
+    // Row 3: Inception_Date error
+    expect(screen.getAllByText('3').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Inception_Date')).toBeInTheDocument()
+    expect(screen.getByText('invalid date format')).toBeInTheDocument()
+    expect(screen.getByText('31/13/2024')).toBeInTheDocument()
+    // Row 7: Currency + Sum_Insured errors
+    expect(screen.getAllByText('7').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('Currency')).toBeInTheDocument()
+    expect(screen.getByText('not in ISO 4217')).toBeInTheDocument()
+    expect(screen.getByText('DOLLARS')).toBeInTheDocument()
+    expect(screen.getByText('Sum_Insured')).toBeInTheDocument()
+    expect(screen.getByText('must be non-negative')).toBeInTheDocument()
+  })
+
+  it('falls back to legacy error string when field_errors is empty', () => {
+    const baseResult = FINALISED_SESSION.result as Record<string, unknown>
+    currentSession = {
+      ...FINALISED_SESSION,
+      result: {
+        ...baseResult,
+        errors: [{ row: 5, error: 'schema validation failed', field_errors: [] }],
+      },
+    }
+    renderResultsStep()
+    expect(screen.getByText('schema validation failed')).toBeInTheDocument()
   })
 
   it('displays confidence report after finalisation', () => {
@@ -164,13 +198,13 @@ describe('ResultsStep', () => {
         ...baseResult,
         confidence_report: {
           ...baseConfidence,
-          missing_fields: ['Premium', 'Currency'],
+          missing_fields: ['Premium', 'Deductible'],
         },
       },
     }
     renderResultsStep()
     expect(screen.getByText('Premium')).toBeInTheDocument()
-    expect(screen.getByText('Currency')).toBeInTheDocument()
+    expect(screen.getByText('Deductible')).toBeInTheDocument()
   })
 
   it('displays low confidence fields after finalisation', () => {

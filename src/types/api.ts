@@ -14,6 +14,7 @@ export type ColumnMapping = Schemas['ColumnMapping']
 export type MappingResult = Schemas['MappingResult']
 export type ConfidenceReport = Schemas['ConfidenceReport']
 export type RowError = Schemas['RowError']
+export type FieldError = Schemas['FieldError']
 export type ProcessingResult = Schemas['ProcessingResult']
 export type SchemaField = Schemas['FieldDefinition']
 
