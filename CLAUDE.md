@@ -13,9 +13,12 @@ React 19, TypeScript 5.9, Vite 8, React Router, Vitest, ESLint, Prettier
 ```
 src/
   api/               # API client — typed fetch wrappers for the RiskFlow REST API
+  assets/            # Static assets (images, icons)
   components/        # Shared UI components (buttons, tables, layouts)
   features/
     flow-mapper/     # Interactive mapping workflow (upload → review → finalise)
+      edges/         # Custom React Flow edge components
+      nodes/         # Custom React Flow node components
   hooks/             # Custom React hooks
   types/             # Shared TypeScript types (API response shapes)
   test/              # Test setup and utilities

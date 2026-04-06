@@ -9,9 +9,10 @@
 - Shared components live in `src/components/`.
 - API client functions live in `src/api/`.
 - Types shared across features live in `src/types/`.
-- No circular dependencies between features.
+- No cross-feature imports — `src/features/<X>` must never import from `src/features/<Y>`.
+- Layer dependency order: `types → api → hooks → components → features`. Each layer may only import from layers to its left.
 
 ## Mechanical validation before merge
 Every change must pass automated checks before human review:
-- Pre-commit hook: vitest, tsc, eslint, prettier
+- Pre-commit hook: vitest, tsc, eslint, prettier, lint:boundaries
 - PR review: all checks green before merge
