@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.10
+
+### Other Changes
+
+- add test for legacy error fallback when field_errors is empty
+
+### Other Changes
+
+- Merge pull request #77 from ricjhill/feature/per-field-errors
+- Fix test name and add row number assertions (reviewer feedback)
+- RED→GREEN: display per-field errors in ResultsStep
+
+
 ## 0.1.9
 
 ### Other Changes
