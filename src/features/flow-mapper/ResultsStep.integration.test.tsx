@@ -133,10 +133,12 @@ describe('ResultsStep', () => {
     currentSession = FINALISED_SESSION
     renderResultsStep()
     // Row 3: Inception_Date error
+    expect(screen.getAllByText('3').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('Inception_Date')).toBeInTheDocument()
     expect(screen.getByText('invalid date format')).toBeInTheDocument()
     expect(screen.getByText('31/13/2024')).toBeInTheDocument()
     // Row 7: Currency + Sum_Insured errors
+    expect(screen.getAllByText('7').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('Currency')).toBeInTheDocument()
     expect(screen.getByText('not in ISO 4217')).toBeInTheDocument()
     expect(screen.getByText('DOLLARS')).toBeInTheDocument()
@@ -144,7 +146,7 @@ describe('ResultsStep', () => {
     expect(screen.getByText('must be non-negative')).toBeInTheDocument()
   })
 
-  it('falls back to legacy error string when field_errors is absent', () => {
+  it('falls back to legacy error string when field_errors is empty', () => {
     const baseResult = FINALISED_SESSION.result as Record<string, unknown>
     currentSession = {
       ...FINALISED_SESSION,
