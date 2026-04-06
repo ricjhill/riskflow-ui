@@ -144,6 +144,19 @@ describe('ResultsStep', () => {
     expect(screen.getByText('must be non-negative')).toBeInTheDocument()
   })
 
+  it('falls back to legacy error string when field_errors is absent', () => {
+    const baseResult = FINALISED_SESSION.result as Record<string, unknown>
+    currentSession = {
+      ...FINALISED_SESSION,
+      result: {
+        ...baseResult,
+        errors: [{ row: 5, error: 'schema validation failed', field_errors: [] }],
+      },
+    }
+    renderResultsStep()
+    expect(screen.getByText('schema validation failed')).toBeInTheDocument()
+  })
+
   it('displays confidence report after finalisation', () => {
     currentSession = FINALISED_SESSION
     renderResultsStep()
