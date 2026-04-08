@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.0
+
+### Bug Fixes
+
+- upgrade vite 8.0.4 → 8.0.7 to resolve high-severity CVEs
+
+### Features
+
+- auto-invoke issue-lifecycle agent from /create-pr skill
+
+### Other Changes
+
+- Merge pull request #80 from ricjhill/feature/auto-invoke-issue-lifecycle
+- Regenerate package-lock.json after rebase
+
+
 ## 0.1.13
 
 ### Other Changes
