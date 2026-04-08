@@ -21,7 +21,7 @@ Create a PR for the current branch. The code-reviewer agent must approve before 
 
 ### Phase 2: Draft PR body
 
-Write the full PR body using the template in Phase 4. Do not create the PR yet.
+Write the full PR body using the template in Phase 5. Do not create the PR yet.
 
 Include:
 - **TDD cycles**: list each RED/GREEN step — what test was written, how it failed, what was implemented to make it pass
@@ -32,9 +32,15 @@ Include:
 
 1. Launch the `code-reviewer` agent, providing both the branch diff and the draft PR body text
 2. If the reviewer returns **BLOCK** or **REVISE**: fix the issues, then re-run
-3. If the reviewer returns **APPROVE**: proceed to Phase 4
+3. If the reviewer returns **APPROVE**: proceed to Phase 4 (Issue lifecycle)
 
-### Phase 4: Create PR
+### Phase 4: Issue lifecycle
+
+1. Scan the draft PR body (from Phase 2) for `Closes #N` and `Fixes #N` references (case-insensitive)
+2. For each referenced issue number, spawn the `issue-lifecycle` agent to post a **Design Decision** comment on that issue
+3. If no `Closes #N` / `Fixes #N` references are found, warn the user but proceed to Phase 5
+
+### Phase 5: Create PR
 
 ```
 gh pr create --base main --title "<short title>" --body "$(cat <<'EOF'
