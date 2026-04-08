@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.13
+
+### Other Changes
+
+- Merge pull request #81 from ricjhill/feature/vitest-coverage
+- Fix vite security audit and add sticky coverage PR comment
+- Add vitest code coverage with V8 provider (#50)
+
+
 ## 0.1.12
 
 ### Documentation
