@@ -27,5 +27,12 @@ export default defineConfig({
     css: true,
     reporters: ['default', 'junit'],
     outputFile: { junit: 'reports/unit.xml' },
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: ['src/test/**', 'src/types/**', '**/*.test.{ts,tsx}', '**/*.d.ts'],
+      reporter: ['text', 'json-summary', 'lcov'],
+      reportsDirectory: 'reports/coverage',
+    },
   },
 })

@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage
+        run: npx vitest run --coverage
 
       - name: Assert test count floor
         run: |
@@ -54,6 +54,22 @@ jobs:
           npm run generate:types
           git diff --exit-code src/types/api.generated.ts || (echo "Generated types are stale — run: npm run generate:types" && exit 1)
 
+      - name: Coverage summary
+        if: always() && hashFiles('reports/coverage/coverage-summary.json') != ''
+        run: |
+          node -e "
+          const summary = require('./reports/coverage/coverage-summary.json');
+          const t = summary.total;
+          const fmt = (m) => m.pct.toFixed(1) + '% (' + m.covered + '/' + m.total + ')';
+          console.log('## Test Coverage\n');
+          console.log('| Metric | Coverage |');
+          console.log('|--------|----------|');
+          console.log('| Statements | ' + fmt(t.statements) + ' |');
+          console.log('| Branches | ' + fmt(t.branches) + ' |');
+          console.log('| Functions | ' + fmt(t.functions) + ' |');
+          console.log('| Lines | ' + fmt(t.lines) + ' |');
+          " >> $GITHUB_STEP_SUMMARY
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v7
@@ -67,7 +83,7 @@ jobs:
         uses: dorny/test-reporter@v3
         with:
           name: Unit Tests
-          path: reports/*.xml
+          path: reports/unit.xml
           reporter: java-junit
 
   harness:
