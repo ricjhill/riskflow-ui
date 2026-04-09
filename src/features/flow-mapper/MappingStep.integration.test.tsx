@@ -86,4 +86,11 @@ describe('MappingStep', () => {
     expect(screen.getByText('Source Columns')).toBeInTheDocument()
     expect(screen.getByText('Target Fields')).toBeInTheDocument()
   })
+
+  it('shows default instruction when no source is active', () => {
+    renderMappingStep()
+    const instruction = screen.getByRole('status')
+    expect(instruction).toBeInTheDocument()
+    expect(instruction).toHaveTextContent(/click a/i)
+  })
 })

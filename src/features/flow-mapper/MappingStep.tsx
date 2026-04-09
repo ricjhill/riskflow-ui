@@ -100,11 +100,23 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
           </Panel>
         </ReactFlow>
       </div>
-      {activeSource && (
-        <p className="mapping-step-hint">
-          Click a target field to map <strong>{activeSource}</strong>
-        </p>
-      )}
+      <div className="mapping-step-instruction" role="status" aria-live="polite">
+        {activeSource ? (
+          <>
+            <span className="mapping-step-instruction-icon" aria-hidden="true">
+              &#x2192;
+            </span>
+            Now click a <strong>target field</strong> to map <strong>{activeSource}</strong>
+          </>
+        ) : (
+          <>
+            <span className="mapping-step-instruction-icon" aria-hidden="true">
+              &#x1F5B1;
+            </span>
+            Click a <strong>source column</strong> to begin mapping
+          </>
+        )}
+      </div>
       <div className="mapping-step-actions">
         <button type="button" onClick={onBack}>
           Back
