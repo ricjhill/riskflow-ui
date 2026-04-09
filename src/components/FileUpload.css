@@ -42,6 +42,7 @@
   font-size: 14px;
   cursor: pointer;
   transition: border-color 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .file-upload button:hover:not(:disabled) {
