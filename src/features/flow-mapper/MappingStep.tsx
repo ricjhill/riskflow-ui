@@ -98,6 +98,25 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
           <Panel position="top-right" className="mapping-column-label">
             Target Fields
           </Panel>
+          <Panel position="bottom-right" className="mapping-legend">
+            <span className="mapping-legend-title">Confidence</span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--high" />
+              High (&ge;80%)
+            </span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--medium" />
+              Medium (&ge;50%)
+            </span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--low" />
+              Low (&gt;0%)
+            </span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--none" />
+              None
+            </span>
+          </Panel>
         </ReactFlow>
       </div>
       <div className="mapping-step-instruction" role="status" aria-live="polite">

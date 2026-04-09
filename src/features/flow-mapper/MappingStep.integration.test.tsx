@@ -93,4 +93,10 @@ describe('MappingStep', () => {
     expect(instruction).toBeInTheDocument()
     expect(instruction).toHaveTextContent(/click a/i)
   })
+
+  it('renders confidence legend', () => {
+    renderMappingStep()
+    expect(screen.getByText('Confidence')).toBeInTheDocument()
+    expect(screen.getByText(/high/i)).toBeInTheDocument()
+  })
 })
