@@ -75,4 +75,9 @@ describe('MappingStep', () => {
       expect.any(Array),
     )
   })
+
+  it('renders canvas background pattern', () => {
+    const { container } = renderMappingStep()
+    expect(container.querySelector('.react-flow__background')).toBeInTheDocument()
+  })
 })

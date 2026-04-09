@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { ReactFlow } from '@xyflow/react'
+import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react'
 import type { Edge } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useSessionContext } from './SessionContext'
@@ -71,7 +71,10 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
 
   return (
     <div className="mapping-step">
-      <div className="mapping-step-canvas" style={{ width: '100%', height: 500 }}>
+      <div
+        className="mapping-step-canvas"
+        style={{ width: '100%', height: 'clamp(400px, 60vh, 700px)' }}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -82,7 +85,9 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable={false}
-        />
+        >
+          <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="var(--border)" />
+        </ReactFlow>
       </div>
       {activeSource && (
         <p className="mapping-step-hint">
