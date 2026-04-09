@@ -75,4 +75,37 @@ describe('MappingStep', () => {
       expect.any(Array),
     )
   })
+
+  it('renders canvas background pattern', () => {
+    const { container } = renderMappingStep()
+    expect(container.querySelector('.react-flow__background')).toBeInTheDocument()
+  })
+
+  it('renders column header labels', () => {
+    renderMappingStep()
+    expect(screen.getByText('Source Columns')).toBeInTheDocument()
+    expect(screen.getByText('Target Fields')).toBeInTheDocument()
+  })
+
+  it('shows default instruction when no source is active', () => {
+    renderMappingStep()
+    const instruction = screen.getByRole('status')
+    expect(instruction).toBeInTheDocument()
+    expect(instruction).toHaveTextContent(/click a/i)
+  })
+
+  it('shows active instruction after clicking a source node', () => {
+    renderMappingStep()
+    const sourceNode = screen.getByText('col1')
+    fireEvent.click(sourceNode)
+    const instruction = screen.getByRole('status')
+    expect(instruction).toHaveTextContent(/now click a/i)
+    expect(instruction).toHaveTextContent('col1')
+  })
+
+  it('renders confidence legend', () => {
+    renderMappingStep()
+    expect(screen.getByText('Confidence')).toBeInTheDocument()
+    expect(screen.getByText(/high/i)).toBeInTheDocument()
+  })
 })

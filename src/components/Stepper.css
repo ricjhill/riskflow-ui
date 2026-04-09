@@ -10,27 +10,31 @@
 .stepper-step {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   position: relative;
-  padding: 12px 0;
+  padding: 0;
   color: var(--text);
-  font-size: 15px;
+  font-size: 14px;
 }
 
+/* Connecting line between steps */
 .stepper-step + .stepper-step::before {
   content: '';
   position: absolute;
-  left: -50%;
-  right: 50%;
-  top: 22px;
-  height: 2px;
+  top: 16px;
+  left: calc(-50% + 20px);
+  right: calc(50% + 20px);
+  height: 3px;
   background: var(--border);
+  border-radius: 2px;
   z-index: 0;
 }
 
+/* Completed connecting line fills with accent */
 .stepper-step--completed + .stepper-step::before {
-  background: var(--confidence-high);
+  background: var(--accent);
 }
 
 .stepper-number {
@@ -47,18 +51,25 @@
   font-size: 14px;
   z-index: 1;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
 .stepper-step--active .stepper-number {
   border-color: var(--accent);
   background: var(--accent);
   color: #fff;
+  box-shadow: 0 0 0 4px var(--accent-bg);
 }
 
 .stepper-step--completed .stepper-number {
-  border-color: var(--confidence-high);
-  background: var(--confidence-high);
+  border-color: var(--accent);
+  background: var(--accent);
   color: #fff;
+}
+
+.stepper-label {
+  font-size: 13px;
+  text-align: center;
 }
 
 .stepper-step--active .stepper-label {
@@ -67,5 +78,5 @@
 }
 
 .stepper-step--completed .stepper-label {
-  color: var(--confidence-high);
+  color: var(--accent);
 }

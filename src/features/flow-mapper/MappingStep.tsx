@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { ReactFlow } from '@xyflow/react'
+import { ReactFlow, Background, BackgroundVariant, Panel } from '@xyflow/react'
 import type { Edge } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useSessionContext } from './SessionContext'
@@ -38,13 +38,22 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
     if (!session) return []
     const mappedSources = new Set(edges.map((e) => e.source.replace('source-', '')))
     const unmapped = session.source_headers.filter((h) => !mappedSources.has(h))
-    return buildNodes(
+    const base = buildNodes(
       session.source_headers,
       session.target_fields,
       edgesToMappings(edges),
       unmapped,
     )
-  }, [session, edges])
+    return base.map((n) => {
+      if (n.type === 'sourceHeader') {
+        return { ...n, data: { ...n.data, active: n.id === `source-${activeSource}` } }
+      }
+      if (n.type === 'targetField') {
+        return { ...n, data: { ...n.data, awaiting: activeSource !== null } }
+      }
+      return n
+    })
+  }, [session, edges, activeSource])
 
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: { id: string; type?: string }) => {
@@ -71,7 +80,10 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
 
   return (
     <div className="mapping-step">
-      <div className="mapping-step-canvas" style={{ width: '100%', height: 500 }}>
+      <div
+        className="mapping-step-canvas"
+        style={{ width: '100%', height: 'clamp(400px, 60vh, 700px)' }}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -82,13 +94,52 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
           nodesDraggable={false}
           nodesConnectable={false}
           elementsSelectable={false}
-        />
+        >
+          <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="var(--border)" />
+          <Panel position="top-left" className="mapping-column-label">
+            Source Columns
+          </Panel>
+          <Panel position="top-right" className="mapping-column-label">
+            Target Fields
+          </Panel>
+          <Panel position="bottom-right" className="mapping-legend">
+            <span className="mapping-legend-title">Confidence</span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--high" />
+              High (&ge;80%)
+            </span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--medium" />
+              Medium (&ge;50%)
+            </span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--low" />
+              Low (&gt;0%)
+            </span>
+            <span className="mapping-legend-item">
+              <span className="mapping-legend-dot mapping-legend-dot--none" />
+              None
+            </span>
+          </Panel>
+        </ReactFlow>
       </div>
-      {activeSource && (
-        <p className="mapping-step-hint">
-          Click a target field to map <strong>{activeSource}</strong>
-        </p>
-      )}
+      <div className="mapping-step-instruction" role="status" aria-live="polite">
+        {activeSource ? (
+          <>
+            <span className="mapping-step-instruction-icon" aria-hidden="true">
+              &#x2192;
+            </span>
+            Now click a <strong>target field</strong> to map <strong>{activeSource}</strong>
+          </>
+        ) : (
+          <>
+            <span className="mapping-step-instruction-icon" aria-hidden="true">
+              &#x1F5B1;
+            </span>
+            Click a <strong>source column</strong> to begin mapping
+          </>
+        )}
+      </div>
       <div className="mapping-step-actions">
         <button type="button" onClick={onBack}>
           Back
