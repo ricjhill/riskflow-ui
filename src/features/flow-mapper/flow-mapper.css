@@ -204,6 +204,23 @@
   transform: translateY(-1px);
 }
 
+.source-node--active {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 3px var(--accent-bg),
+    0 4px 12px rgba(37, 99, 235, 0.15);
+  background: color-mix(in srgb, var(--accent) 4%, var(--bg));
+}
+
+.source-node--active:hover {
+  border-color: var(--accent);
+}
+
+.source-node--active.source-node--unmapped {
+  animation: none;
+  border-color: var(--accent);
+}
+
 .source-node--unmapped {
   border-color: var(--confidence-medium);
   animation: pulse 2s ease-in-out infinite;

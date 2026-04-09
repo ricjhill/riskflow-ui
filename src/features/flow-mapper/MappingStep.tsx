@@ -38,13 +38,18 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
     if (!session) return []
     const mappedSources = new Set(edges.map((e) => e.source.replace('source-', '')))
     const unmapped = session.source_headers.filter((h) => !mappedSources.has(h))
-    return buildNodes(
+    const base = buildNodes(
       session.source_headers,
       session.target_fields,
       edgesToMappings(edges),
       unmapped,
     )
-  }, [session, edges])
+    return base.map((n) =>
+      n.type === 'sourceHeader'
+        ? { ...n, data: { ...n.data, active: n.id === `source-${activeSource}` } }
+        : n,
+    )
+  }, [session, edges, activeSource])
 
   const handleNodeClick = useCallback(
     (_event: React.MouseEvent, node: { id: string; type?: string }) => {
