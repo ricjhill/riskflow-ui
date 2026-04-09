@@ -154,6 +154,40 @@
   flex-shrink: 0;
 }
 
+/* --- Edge labels --- */
+.risk-flow-edge-label {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text-h);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+  font-family: var(--mono);
+}
+
+.risk-flow-edge-label--high {
+  color: var(--confidence-high);
+  border-color: var(--confidence-high);
+}
+
+.risk-flow-edge-label--medium {
+  color: var(--confidence-medium);
+  border-color: var(--confidence-medium);
+}
+
+.risk-flow-edge-label--low {
+  color: var(--confidence-low);
+  border-color: var(--confidence-low);
+}
+
+.risk-flow-edge-label--none {
+  color: var(--confidence-none);
+  border-color: var(--confidence-none);
+}
+
 .mapping-step-actions {
   display: flex;
   gap: 12px;
