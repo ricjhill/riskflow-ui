@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.3.0
+
+### Bug Fixes
+
+- address code review — dark mode glow, CSS collision, test gaps
+
+### Features
+
+- add awaiting-selection state to target nodes
+- add confidence color legend to mapping canvas
+- add confidence percentage labels to mapping edges
+- replace hint text with always-visible instruction banner
+- highlight active source node with accent ring glow
+- add column header labels to mapping canvas
+- add dot grid background and responsive canvas height
+- wrap flow-mapper content in card container with shadow
+
+### Styling
+
+- add shadows, hover states, and transitions to mapping nodes
+- fine-tune dark mode card and background contrast
+- add subtle shadows to primary buttons for SaaS depth
+- add responsive breakpoints for card layout on mobile
+- redesign stepper as visual progress bar
+- center results step within card layout
+- swap purple accent to blue SaaS palette with slate greys
+
+### Other Changes
+
+- Merge pull request #84 from ricjhill/feature/ui-redesign-saas-card
+
+
 ## 0.2.0
 
 ### Bug Fixes
