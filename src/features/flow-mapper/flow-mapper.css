@@ -343,3 +343,16 @@
   display: flex;
   gap: 12px;
 }
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+  .flow-mapper {
+    padding: 0 8px;
+  }
+
+  .flow-mapper-card {
+    margin: 16px auto;
+    padding: 20px 16px;
+    border-radius: 8px;
+  }
+}
