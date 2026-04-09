@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { ReactFlowProvider } from '@xyflow/react'
 import TargetFieldNode from './TargetFieldNode'
 
-function renderNode(data: { label: string; connected: boolean }) {
+function renderNode(data: { label: string; connected: boolean; awaiting?: boolean }) {
   return render(
     <ReactFlowProvider>
       <TargetFieldNode id="test" data={data} />
@@ -25,5 +25,15 @@ describe('TargetFieldNode', () => {
   it('does not have connected class when disconnected', () => {
     const { container } = renderNode({ label: 'Field', connected: false })
     expect(container.querySelector('.target-node--connected')).not.toBeInTheDocument()
+  })
+
+  it('has awaiting class when awaiting', () => {
+    const { container } = renderNode({ label: 'Field', connected: false, awaiting: true })
+    expect(container.querySelector('.target-node--awaiting')).toBeInTheDocument()
+  })
+
+  it('does not have awaiting class when not awaiting', () => {
+    const { container } = renderNode({ label: 'Field', connected: false, awaiting: false })
+    expect(container.querySelector('.target-node--awaiting')).not.toBeInTheDocument()
   })
 })

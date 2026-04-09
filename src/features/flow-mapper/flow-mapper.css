@@ -387,6 +387,18 @@
   background: color-mix(in srgb, var(--confidence-high) 4%, var(--bg));
 }
 
+.target-node--awaiting {
+  border-color: var(--accent-border);
+  border-style: dashed;
+}
+
+.target-node--awaiting:hover {
+  border-color: var(--accent);
+  border-style: solid;
+  background: color-mix(in srgb, var(--accent) 4%, var(--bg));
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
 /* --- Results step --- */
 .results-step {
   display: flex;

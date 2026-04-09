@@ -44,11 +44,15 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
       edgesToMappings(edges),
       unmapped,
     )
-    return base.map((n) =>
-      n.type === 'sourceHeader'
-        ? { ...n, data: { ...n.data, active: n.id === `source-${activeSource}` } }
-        : n,
-    )
+    return base.map((n) => {
+      if (n.type === 'sourceHeader') {
+        return { ...n, data: { ...n.data, active: n.id === `source-${activeSource}` } }
+      }
+      if (n.type === 'targetField') {
+        return { ...n, data: { ...n.data, awaiting: activeSource !== null } }
+      }
+      return n
+    })
   }, [session, edges, activeSource])
 
   const handleNodeClick = useCallback(
