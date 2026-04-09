@@ -14,18 +14,20 @@ function FlowMapper() {
   return (
     <SessionProvider>
       <div className="flow-mapper">
-        <Stepper steps={STEPS} currentStep={currentStep} />
-        {currentStep === 0 && <UploadStep onNext={() => setCurrentStep(1)} />}
-        {currentStep === 1 && (
-          <MappingStep onNext={() => setCurrentStep(2)} onBack={() => setCurrentStep(0)} />
-        )}
-        {currentStep === 2 && (
-          <ResultsStep
-            onBack={() => setCurrentStep(1)}
-            onReset={() => setCurrentStep(0)}
-            onFinalised={() => setCurrentStep(3)}
-          />
-        )}
+        <div className="flow-mapper-card">
+          <Stepper steps={STEPS} currentStep={currentStep} />
+          {currentStep === 0 && <UploadStep onNext={() => setCurrentStep(1)} />}
+          {currentStep === 1 && (
+            <MappingStep onNext={() => setCurrentStep(2)} onBack={() => setCurrentStep(0)} />
+          )}
+          {currentStep === 2 && (
+            <ResultsStep
+              onBack={() => setCurrentStep(1)}
+              onReset={() => setCurrentStep(0)}
+              onFinalised={() => setCurrentStep(3)}
+            />
+          )}
+        </div>
       </div>
     </SessionProvider>
   )

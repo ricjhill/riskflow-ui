@@ -4,9 +4,21 @@
 
 /* --- Page shell --- */
 .flow-mapper {
-  padding: 24px 32px;
+  padding: 0 16px;
   text-align: left;
-  max-width: 100%;
+  min-height: calc(100svh - 57px);
+  background: var(--code-bg);
+}
+
+.flow-mapper-card {
+  max-width: 860px;
+  margin: 32px auto;
+  background: var(--bg);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 24px rgba(0, 0, 0, 0.06);
+  padding: 32px;
 }
 
 /* --- Upload step --- */

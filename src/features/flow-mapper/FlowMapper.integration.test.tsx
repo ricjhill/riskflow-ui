@@ -29,4 +29,12 @@ describe('FlowMapper', () => {
     expect(steps[2]).toHaveTextContent('Results')
     expect(steps[2]).not.toHaveAttribute('aria-current')
   })
+
+  it('wraps content in a card container', () => {
+    mockFetch({ schemas: [] })
+    const { container } = renderFlowMapper()
+
+    const card = container.querySelector('.flow-mapper-card')
+    expect(card).toBeInTheDocument()
+  })
 })
