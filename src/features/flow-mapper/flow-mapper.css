@@ -347,6 +347,20 @@
   gap: 12px;
 }
 
+/* --- Dark mode --- */
+@media (prefers-color-scheme: dark) {
+  .flow-mapper {
+    background: color-mix(in srgb, var(--bg) 90%, black);
+  }
+
+  .flow-mapper-card {
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.3),
+      0 4px 24px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+  }
+}
+
 /* --- Responsive --- */
 @media (max-width: 1024px) {
   .flow-mapper {
