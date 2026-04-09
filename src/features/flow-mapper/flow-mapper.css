@@ -304,7 +304,7 @@
   border-color: var(--accent);
   box-shadow:
     0 0 0 3px var(--accent-bg),
-    0 4px 12px rgba(37, 99, 235, 0.15);
+    0 4px 12px color-mix(in srgb, var(--accent) 15%, transparent);
   background: color-mix(in srgb, var(--accent) 4%, var(--bg));
 }
 
@@ -397,6 +397,11 @@
   border-style: solid;
   background: color-mix(in srgb, var(--accent) 4%, var(--bg));
   box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.target-node--connected.target-node--awaiting {
+  border-style: solid;
+  border-left: 4px solid var(--confidence-high);
 }
 
 /* --- Results step --- */

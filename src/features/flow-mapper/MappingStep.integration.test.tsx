@@ -94,6 +94,15 @@ describe('MappingStep', () => {
     expect(instruction).toHaveTextContent(/click a/i)
   })
 
+  it('shows active instruction after clicking a source node', () => {
+    renderMappingStep()
+    const sourceNode = screen.getByText('col1')
+    fireEvent.click(sourceNode)
+    const instruction = screen.getByRole('status')
+    expect(instruction).toHaveTextContent(/now click a/i)
+    expect(instruction).toHaveTextContent('col1')
+  })
+
   it('renders confidence legend', () => {
     renderMappingStep()
     expect(screen.getByText('Confidence')).toBeInTheDocument()
