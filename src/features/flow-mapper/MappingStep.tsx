@@ -1,5 +1,5 @@
 import { useMemo, useState, useCallback } from 'react'
-import { ReactFlow, Background, BackgroundVariant } from '@xyflow/react'
+import { ReactFlow, Background, BackgroundVariant, Panel } from '@xyflow/react'
 import type { Edge } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import { useSessionContext } from './SessionContext'
@@ -87,6 +87,12 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
           elementsSelectable={false}
         >
           <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="var(--border)" />
+          <Panel position="top-left" className="mapping-column-label">
+            Source Columns
+          </Panel>
+          <Panel position="top-right" className="mapping-column-label">
+            Target Fields
+          </Panel>
         </ReactFlow>
       </div>
       {activeSource && (

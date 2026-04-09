@@ -80,4 +80,10 @@ describe('MappingStep', () => {
     const { container } = renderMappingStep()
     expect(container.querySelector('.react-flow__background')).toBeInTheDocument()
   })
+
+  it('renders column header labels', () => {
+    renderMappingStep()
+    expect(screen.getByText('Source Columns')).toBeInTheDocument()
+    expect(screen.getByText('Target Fields')).toBeInTheDocument()
+  })
 })
