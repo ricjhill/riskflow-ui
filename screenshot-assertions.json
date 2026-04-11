@@ -1,0 +1,19 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "name": "homepage",
+      "assertions": ["h1", "nav a"]
+    },
+    {
+      "path": "/flow-mapper",
+      "name": "flow-mapper",
+      "assertions": [".stepper", "select#schema-select", ".file-upload"]
+    },
+    {
+      "path": "/api-status",
+      "name": "api-status",
+      "assertions": [".api-status-table"]
+    }
+  ]
+}

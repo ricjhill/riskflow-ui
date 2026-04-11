@@ -242,6 +242,8 @@ jobs:
               - 'nginx.conf'
               - 'package.json'
               - 'package-lock.json'
+              - 'screenshot-assertions.json'
+              - 'tools/visual-smoke.sh'
 
       - name: Build and start container
         if: steps.filter.outputs.app == 'true'
@@ -265,32 +267,9 @@ jobs:
         if: steps.filter.outputs.app == 'true'
         run: uvx rodney start
 
-      - name: Assert homepage elements
+      - name: Run visual smoke assertions
         if: steps.filter.outputs.app == 'true'
-        run: |
-          uvx rodney open http://localhost:3000/
-          uvx rodney waitload
-          uvx rodney waitstable
-          uvx rodney exists "h1"
-          uvx rodney exists "nav a"
-
-      - name: Assert flow-mapper elements
-        if: steps.filter.outputs.app == 'true'
-        run: |
-          uvx rodney open http://localhost:3000/flow-mapper
-          uvx rodney waitload
-          uvx rodney waitstable
-          uvx rodney exists ".stepper"
-          uvx rodney exists "select#schema-select"
-          uvx rodney exists ".file-upload"
-
-      - name: Assert api-status elements
-        if: steps.filter.outputs.app == 'true'
-        run: |
-          uvx rodney open http://localhost:3000/api-status
-          uvx rodney waitload
-          uvx rodney waitstable
-          uvx rodney exists ".api-status-table"
+        run: tools/visual-smoke.sh http://localhost:3000
 
       - name: Teardown
         if: always()

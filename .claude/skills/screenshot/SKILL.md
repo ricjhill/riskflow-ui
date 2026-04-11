@@ -58,35 +58,21 @@ Route slug: replace `/` with `home`, and other `/` with `-` (e.g. `/flow-mapper`
 
 ### 5. Element assertions
 
-After screenshots, run targeted assertions on key elements per route. These verify the page is functional, not just rendered.
+After screenshots, run targeted assertions on key elements per route. Assertions are defined in `screenshot-assertions.json` at the repo root — this is the single source of truth shared with the CI `visual-smoke` job.
 
-**Homepage (`/`):**
-```bash
-uvx rodney exists "h1"
-uvx rodney exists "nav a"
-```
+Read `screenshot-assertions.json` and for each route entry:
 
-**Flow Mapper (`/flow-mapper`):**
 ```bash
-uvx rodney open http://localhost:<port>/flow-mapper
+uvx rodney open http://localhost:<port><path>
 uvx rodney waitload
 uvx rodney waitstable
-uvx rodney exists ".stepper, ol[role='list']"
-uvx rodney exists "select#schema-select"
-uvx rodney exists "[data-testid='file-input']"
+# For each selector in the route's "assertions" array:
+uvx rodney exists "<selector>"
 ```
-
-**API Status (`/api-status`):**
-```bash
-uvx rodney open http://localhost:<port>/api-status
-uvx rodney waitload
-uvx rodney waitstable
-uvx rodney exists "h2"
-```
-
-For any routes added in future PRs, derive sensible assertions from the component code (look for role attributes, data-testid, semantic HTML).
 
 If an assertion fails (exit code 1), report it but continue with remaining checks.
+
+When adding a new route, update `screenshot-assertions.json` — do not hardcode assertions in this skill or in the CI workflow.
 
 ### 6. Report
 
