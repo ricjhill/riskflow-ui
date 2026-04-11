@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0
+
+### Features
+
+- standardise hook messages, consolidate security patterns (#87)
+
+
 ## 0.5.0
 
 ### Features
