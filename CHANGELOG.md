@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0
+
+### Features
+
+- auto-derive screenshot assertions from manifest (#86)
+
+
 ## 0.4.0
 
 ### Features
