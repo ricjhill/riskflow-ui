@@ -161,6 +161,12 @@ jobs:
             bash -n "$hook" && echo "OK: $hook" || exit 1
           done
 
+      - name: Validate harness integrity
+        run: tools/validate-harness.sh
+
+      - name: Validate stack versions match CLAUDE.md
+        run: tools/validate-stack-versions.sh
+
   boot-test:
     needs: quality
     runs-on: ubuntu-latest
