@@ -44,13 +44,19 @@ fi
 
 _info "CLAUDE.md stack: $STACK_LINE"
 
-REACT_MAJOR=$(echo "$STACK_LINE" | grep -oP 'React \K\d+')
-TS_MAJOR=$(echo "$STACK_LINE" | grep -oP 'TypeScript \K\d+')
-VITE_MAJOR=$(echo "$STACK_LINE" | grep -oP 'Vite \K\d+')
+REACT_MAJOR=$(echo "$STACK_LINE" | grep -oP 'React \K\d+' || true)
+TS_MAJOR=$(echo "$STACK_LINE" | grep -oP 'TypeScript \K\d+' || true)
+VITE_MAJOR=$(echo "$STACK_LINE" | grep -oP 'Vite \K\d+' || true)
 
-check_version "react" "React" "$REACT_MAJOR"
-check_version "typescript" "TypeScript" "$TS_MAJOR"
-check_version "vite" "Vite" "$VITE_MAJOR"
+for pair in "react:React:$REACT_MAJOR" "typescript:TypeScript:$TS_MAJOR" "vite:Vite:$VITE_MAJOR"; do
+  pkg="${pair%%:*}"; rest="${pair#*:}"; display="${rest%%:*}"; major="${rest#*:}"
+  if [ -z "$major" ]; then
+    _error "$display version not found in CLAUDE.md stack line"
+    FAILED=1
+  else
+    check_version "$pkg" "$display" "$major"
+  fi
+done
 
 if [ "$FAILED" -eq 1 ]; then
   _error "stack version validation failed — update CLAUDE.md or package.json"

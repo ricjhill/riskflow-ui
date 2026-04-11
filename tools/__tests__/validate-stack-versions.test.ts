@@ -101,4 +101,13 @@ describe('validate-stack-versions.sh', () => {
     expect(result.exitCode).toBe(1)
     expect(result.stderr).toContain('React not found in package.json')
   })
+
+  it('fails with a diagnostic when stack line is partial (missing Vite)', () => {
+    writeClaudeMd('React 19, TypeScript 5.9, Prettier')
+    writePackageJson({ react: '^19.0.0' }, { typescript: '~5.9.3', vite: '^8.0.1' })
+
+    const result = run()
+    expect(result.exitCode).toBe(1)
+    expect(result.stderr).toContain('Vite version not found in CLAUDE.md')
+  })
 })
