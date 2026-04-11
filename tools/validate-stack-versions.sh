@@ -35,7 +35,7 @@ print(clean.split('.')[0] if clean else '')
 
 # Extract version claims from CLAUDE.md stack line
 # Format: "React 19, TypeScript 5.9, Vite 8, ..."
-STACK_LINE=$(grep -oP 'React \d+.*Prettier' CLAUDE.md | head -1)
+STACK_LINE=$(grep -oP 'React \d+.*Prettier' CLAUDE.md | head -1 || true)
 
 if [ -z "$STACK_LINE" ]; then
   _error "could not find stack version line in CLAUDE.md"
