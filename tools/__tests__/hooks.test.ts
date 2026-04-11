@@ -210,6 +210,29 @@ describe('protect-files.sh', () => {
     expect(result.exitCode).toBe(2)
   })
 
+  it('allows version-only edits to package.json', () => {
+    const result = runHook('protect-files.sh', {
+      tool_input: {
+        file_path: '/project/package.json',
+        old_string: '  "version": "0.5.0",',
+        new_string: '  "version": "0.6.0",',
+      },
+    })
+    expect(result.exitCode).toBe(0)
+    expect(result.stderr).toContain('allowing version-only edit')
+  })
+
+  it('blocks non-version edits to package.json', () => {
+    const result = runHook('protect-files.sh', {
+      tool_input: {
+        file_path: '/project/package.json',
+        old_string: '  "version": "0.5.0",\n  "name": "old",',
+        new_string: '  "version": "0.6.0",\n  "name": "new",',
+      },
+    })
+    expect(result.exitCode).toBe(2)
+  })
+
   it('allows edits to regular source files', () => {
     const result = runHook('protect-files.sh', {
       tool_input: { file_path: '/project/src/App.tsx' },
