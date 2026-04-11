@@ -221,6 +221,81 @@ jobs:
         if: always()
         run: docker rm -f riskflow-ui-test 2>/dev/null || true
 
+  visual-smoke:
+    needs: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check for relevant changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            app:
+              - 'src/**'
+              - 'Dockerfile'
+              - 'nginx.conf'
+              - 'package.json'
+              - 'package-lock.json'
+
+      - name: Build and start container
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          docker build -t riskflow-ui:test .
+          docker run -d --name riskflow-ui-test -p 3000:3000 riskflow-ui:test
+
+      - name: Wait for container
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          for i in $(seq 1 10); do
+            curl -s http://localhost:3000/ > /dev/null && break || sleep 1
+          done
+          curl -sf http://localhost:3000/ > /dev/null || (echo "Container never became ready" && exit 1)
+
+      - name: Install uv
+        if: steps.filter.outputs.app == 'true'
+        uses: astral-sh/setup-uv@v4
+
+      - name: Start Chrome
+        if: steps.filter.outputs.app == 'true'
+        run: uvx rodney start
+
+      - name: Assert homepage elements
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          uvx rodney open http://localhost:3000/
+          uvx rodney waitload
+          uvx rodney waitstable
+          uvx rodney exists "h1"
+          uvx rodney exists "nav a"
+
+      - name: Assert flow-mapper elements
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          uvx rodney open http://localhost:3000/flow-mapper
+          uvx rodney waitload
+          uvx rodney waitstable
+          uvx rodney exists ".stepper"
+          uvx rodney exists "select#schema-select"
+          uvx rodney exists ".file-upload"
+
+      - name: Assert api-status elements
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          uvx rodney open http://localhost:3000/api-status
+          uvx rodney waitload
+          uvx rodney waitstable
+          uvx rodney exists ".api-status-table"
+
+      - name: Teardown
+        if: always()
+        run: docker rm -f riskflow-ui-test 2>/dev/null || true
+
   security:
     needs: quality
     runs-on: ubuntu-latest
