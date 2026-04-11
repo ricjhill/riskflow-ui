@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+### Features
+
+- add visual-smoke CI job with rodney element assertions (#85)
+
+
 ## 0.3.0
 
 ### Bug Fixes
