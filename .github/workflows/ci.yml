@@ -221,6 +221,81 @@ jobs:
         if: always()
         run: docker rm -f riskflow-ui-test 2>/dev/null || true
 
+  visual-smoke:
+    needs: quality
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check for relevant changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            app:
+              - 'src/**'
+              - 'Dockerfile'
+              - 'nginx.conf'
+              - 'package.json'
+              - 'package-lock.json'
+
+      - name: Build and start container
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          docker build -t riskflow-ui:test .
+          docker run -d --name riskflow-ui-test -p 3000:3000 riskflow-ui:test
+
+      - name: Wait for container
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          for i in $(seq 1 10); do
+            curl -s http://localhost:3000/ > /dev/null && break
+            sleep 1
+          done
+
+      - name: Install rodney
+        if: steps.filter.outputs.app == 'true'
+        run: pip install rodney
+
+      - name: Start Chrome
+        if: steps.filter.outputs.app == 'true'
+        run: rodney start
+
+      - name: Assert homepage elements
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          rodney open http://localhost:3000/
+          rodney waitload
+          rodney waitstable
+          rodney exists "h1"
+          rodney exists "nav a"
+
+      - name: Assert flow-mapper elements
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          rodney open http://localhost:3000/flow-mapper
+          rodney waitload
+          rodney waitstable
+          rodney exists ".stepper, ol[role='list']"
+          rodney exists "select#schema-select"
+          rodney exists "[data-testid='file-input']"
+
+      - name: Assert api-status elements
+        if: steps.filter.outputs.app == 'true'
+        run: |
+          rodney open http://localhost:3000/api-status
+          rodney waitload
+          rodney waitstable
+          rodney exists "h2"
+
+      - name: Teardown
+        if: always()
+        run: docker rm -f riskflow-ui-test 2>/dev/null || true
+
   security:
     needs: quality
     runs-on: ubuntu-latest
