@@ -35,7 +35,8 @@ old_lines = old.splitlines(keepends=True)
 new_lines = new.splitlines(keepends=True)
 diff = list(difflib.unified_diff(old_lines, new_lines, n=0))
 changed = [l for l in diff if l.startswith(('+', '-')) and not l.startswith(('+++', '---'))]
-if changed and all('\"version\"' in l for l in changed):
+import re
+if changed and all(re.search(r'^\s*[+-]\s*\"version\"\s*:', l) for l in changed):
     print('yes')
 else:
     print('no')
