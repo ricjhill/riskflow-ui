@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0
+
+### Features
+
+- add harness integrity and stack version validation to CI (#88)
+
+
 ## 0.6.0
 
 ### Features
