@@ -88,19 +88,8 @@ jobs:
 
       - name: Code pattern security check
         run: |
-          FOUND=0
-          for pattern in 'dangerouslySetInnerHTML' 'eval(' 'innerHTML' 'document\.write'; do
-            HITS=$(grep -rn "$pattern" src/ --include='*.ts' --include='*.tsx' | grep -v '.test.' || true)
-            if [ -n "$HITS" ]; then
-              echo "SECURITY: Found '$pattern':"
-              echo "$HITS"
-              FOUND=1
-            fi
-          done
-          if [ "$FOUND" -eq 1 ]; then
-            echo "Review the above patterns — run /cleanup to address"
-          fi
-          echo "Code pattern check complete"
+          source tools/security-patterns.sh
+          scan_security_patterns src/ warn
 
   code-hygiene:
     runs-on: ubuntu-latest

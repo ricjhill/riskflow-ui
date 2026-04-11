@@ -4,6 +4,9 @@
 # Purpose: Run security scanners before commit.
 # npm audit: dependency vulnerability scanning
 # semgrep: pattern-based security scanning (XSS, OWASP rules)
+# security-patterns.sh: grep-based XSS pattern check (shared with CI)
+source "$(dirname "$0")/../../tools/hook-utils.sh"
+source "$(dirname "$0")/../../tools/security-patterns.sh"
 
 COMMAND=$(/usr/bin/python3 -c "import json,sys; print(json.load(sys.stdin).get('tool_input',{}).get('command',''))" 2>/dev/null || true)
 
@@ -21,14 +24,16 @@ fi
 
 cd "$UI_ROOT" || exit 0
 
-ERRORS=""
+FAILED=0
 
 # 1. npm audit — dependency vulnerabilities
-echo "npm audit..." >&2
+_info "npm audit..."
 OUTPUT=$(npm audit --audit-level=high 2>&1)
 if [ $? -ne 0 ]; then
-  ERRORS+="SECURITY: npm audit found high-severity vulnerabilities:\n$(echo "$OUTPUT" | tail -10)\n"
-  ERRORS+="FIX: Run 'npm audit fix' or update the vulnerable package.\n\n"
+  _error "npm audit found high-severity vulnerabilities"
+  echo "$OUTPUT" | tail -10 >&2
+  _info "fix: run 'npm audit fix' or update the vulnerable package"
+  FAILED=1
 fi
 
 # 2. semgrep — pattern-based scanning (non-blocking if not installed)
@@ -36,20 +41,26 @@ fi
 # This local check catches issues before commit; CI catches issues from
 # dependency updates that bypass local hooks (e.g., Dependabot PRs).
 if command -v semgrep &> /dev/null; then
-  echo "semgrep..." >&2
+  _info "semgrep..."
   OUTPUT=$(semgrep scan --config auto --quiet src/ 2>&1)
   if [ $? -ne 0 ] && echo "$OUTPUT" | grep -q "Findings:"; then
-    ERRORS+="SECURITY: semgrep found potential issues:\n$OUTPUT\n"
-    ERRORS+="FIX: Review each finding — false positives can be ignored with nosemgrep comment.\n\n"
+    _error "semgrep found potential issues"
+    echo "$OUTPUT" >&2
+    _info "fix: review each finding — false positives can be ignored with nosemgrep comment"
+    FAILED=1
   fi
 else
-  echo "WARNING: semgrep not installed — skipping pattern-based security scan." >&2
-  echo "Install: pip install semgrep (or brew install semgrep)" >&2
+  _warn "semgrep not installed — skipping pattern-based security scan"
+  _info "install: pip install semgrep (or brew install semgrep)"
 fi
 
-if [ -n "$ERRORS" ]; then
-  echo -e "Security scan failures:\n" >&2
-  echo -e "$ERRORS" >&2
+# 3. Shared security pattern scan (same patterns as CI)
+_info "security patterns..."
+if ! scan_security_patterns src/; then
+  FAILED=1
+fi
+
+if [ "$FAILED" -eq 1 ]; then
   exit 2
 fi
 
