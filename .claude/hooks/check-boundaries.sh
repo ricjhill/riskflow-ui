@@ -5,6 +5,7 @@
 #   types/ <- api/ <- hooks/ <- components/ <- features/
 # Uses the AST-based TypeScript linter for accurate detection
 # (no false positives from comments/strings).
+source "$(dirname "$0")/../../tools/hook-utils.sh"
 
 COMMAND=$(/usr/bin/python3 -c "import json,sys; print(json.load(sys.stdin).get('tool_input',{}).get('command',''))" 2>/dev/null || true)
 
@@ -24,9 +25,9 @@ cd "$UI_ROOT" || exit 0
 
 OUTPUT=$(npx tsx tools/import-boundary-linter.ts 2>&1)
 if [ $? -ne 0 ]; then
-  echo -e "Architecture boundary violations found:\n" >&2
+  _error "architecture boundary violations found"
   echo "$OUTPUT" >&2
-  echo -e "\nAllowed dependency direction: types/ <- api/ <- hooks/ <- components/ <- features/" >&2
+  _info "allowed dependency direction: types/ <- api/ <- hooks/ <- components/ <- features/"
   exit 2
 fi
 
