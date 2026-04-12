@@ -21,17 +21,12 @@
       "Bash(uvx rodney:*)",
       "Read(//home/ric/.claude/plans/**)",
       "Skill(update-config)",
-      "Skill(update-config:*)",
-      "Bash(bash -c ':*)",
-      "Bash(python3 -c \"import json; print\\(json.dumps\\({'test': 1}\\)\\)\")"
+      "Skill(update-config:*)"
     ],
     "deny": [
       "Edit(package-lock.json)",
       "Edit(.env)",
       "Bash(git push --force:*)"
-    ],
-    "additionalDirectories": [
-      "/tmp"
     ]
   },
   "hooks": {
