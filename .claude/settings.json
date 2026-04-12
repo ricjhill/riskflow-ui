@@ -19,7 +19,9 @@
       "Bash(lsof -ti:5173)",
       "Bash(lsof -ti:5174)",
       "Bash(uvx rodney:*)",
-      "Read(//home/ric/.claude/plans/**)"
+      "Read(//home/ric/.claude/plans/**)",
+      "Skill(update-config)",
+      "Skill(update-config:*)"
     ],
     "deny": [
       "Edit(package-lock.json)",
@@ -88,6 +90,11 @@
             "type": "command",
             "command": ".claude/hooks/post-rename-check.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-merge-verify.sh",
+            "timeout": 15
           }
         ]
       }

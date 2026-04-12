@@ -162,13 +162,24 @@ describe('enforce-create-pr.sh', () => {
     expect(result.exitCode).toBe(2)
   })
 
-  it('allows gh pr create with Agent Review section', () => {
+  it('allows gh pr create with Agent Review and issue reference', () => {
+    const result = runHook('enforce-create-pr.sh', {
+      tool_input: {
+        command:
+          'gh pr create --title "test" --body "## Agent Review\\n\\n### Verdict: APPROVE\\n\\nCloses #42"',
+      },
+    })
+    expect(result.exitCode).toBe(0)
+  })
+
+  it('blocks gh pr create with Agent Review but no issue reference', () => {
     const result = runHook('enforce-create-pr.sh', {
       tool_input: {
         command: 'gh pr create --title "test" --body "## Agent Review\\n\\n### Verdict: APPROVE"',
       },
     })
-    expect(result.exitCode).toBe(0)
+    expect(result.exitCode).toBe(2)
+    expect(result.stderr).toContain('must reference at least one issue')
   })
 })
 
@@ -360,6 +371,24 @@ describe('post-rename-check.sh', () => {
         CLAUDE_PROJECT_DIR: '/tmp/some-other-repo',
       },
     )
+    expect(result.exitCode).toBe(0)
+  })
+})
+
+// ─── post-merge-verify.sh ─────────────────────────────────────────────────
+
+describe('post-merge-verify.sh', () => {
+  it('passes through non-gh-pr-merge commands', () => {
+    const result = runHook('post-merge-verify.sh', {
+      tool_input: { command: 'git status' },
+    })
+    expect(result.exitCode).toBe(0)
+  })
+
+  it('passes through when no PR number in command', () => {
+    const result = runHook('post-merge-verify.sh', {
+      tool_input: { command: 'gh pr merge --squash' },
+    })
     expect(result.exitCode).toBe(0)
   })
 })

@@ -15,11 +15,17 @@ fi
 # reviewer's structured verdict. The footer alone ("Generated with
 # [Claude Code]") is not sufficient — it's trivially pasted without
 # actually running the agent.
-if [[ "$COMMAND" =~ "## Agent Review" ]]; then
-  exit 0
+if [[ ! "$COMMAND" =~ "## Agent Review" ]]; then
+  _error "use /create-pr instead of gh pr create directly"
+  _error "the skill runs the code-reviewer agent and includes its verdict in the PR body"
+  _error "the PR body must contain '## Agent Review' to prove the agent ran"
+  exit 2
 fi
 
-_error "use /create-pr instead of gh pr create directly"
-_error "the skill runs the code-reviewer agent and includes its verdict in the PR body"
-_error "the PR body must contain '## Agent Review' to prove the agent ran"
-exit 2
+# Verify PR body references at least one issue
+if ! echo "$COMMAND" | grep -qiE '(closes|fixes|resolves)\s+#[0-9]+'; then
+  _error "PR body must reference at least one issue (e.g. 'Closes #42')"
+  exit 2
+fi
+
+exit 0
