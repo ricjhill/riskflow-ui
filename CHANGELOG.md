@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.0
+
+### Features
+
+- add issue templates and structure enforcement (#92)
+
+
 ## 0.10.0
 
 ### Features
