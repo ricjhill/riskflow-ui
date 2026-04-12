@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.13.0
+
+### Features
+
+- add doc-freshness to CI, replace inline bash in harness-health (#103)
+
+
 ## 0.12.0
 
 ### Features
