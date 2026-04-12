@@ -24,8 +24,8 @@ declare -A FLOORS=(
 # Count tests per layer from JUnit XML
 declare -A COUNTS
 while IFS= read -r line; do
-  name=$(echo "$line" | grep -oP 'name="\K[^"]+' || true)
-  tests=$(echo "$line" | grep -oP 'tests="\K\d+' || true)
+  name=$(echo "$line" | grep -oP '(?<=<testsuite name=")[^"]+' || true)
+  tests=$(echo "$line" | grep -oP '(?<=\stests=")\d+' || true)
   [ -z "$name" ] || [ -z "$tests" ] && continue
 
   layer=""
