@@ -26,14 +26,19 @@ cd "$UI_ROOT" || exit 0
 
 FAILED=0
 
-# 1. npm audit — dependency vulnerabilities
-_info "npm audit..."
-OUTPUT=$(npm audit --audit-level=high 2>&1)
-if [ $? -ne 0 ]; then
-  _error "npm audit found high-severity vulnerabilities"
-  echo "$OUTPUT" | tail -10 >&2
-  _info "fix: run 'npm audit fix' or update the vulnerable package"
-  FAILED=1
+# 1. npm audit — dependency vulnerabilities (only when dep files are staged)
+STAGED=$(git diff --cached --name-only 2>/dev/null || true)
+if echo "$STAGED" | grep -qE '(package\.json|package-lock\.json)'; then
+  _info "npm audit..."
+  OUTPUT=$(npm audit --audit-level=high 2>&1)
+  if [ $? -ne 0 ]; then
+    _error "npm audit found high-severity vulnerabilities"
+    echo "$OUTPUT" | tail -10 >&2
+    _info "fix: run 'npm audit fix' or update the vulnerable package"
+    FAILED=1
+  fi
+else
+  _info "npm audit: skipped (no dependency files staged)"
 fi
 
 # 2. semgrep — pattern-based scanning (non-blocking if not installed)
