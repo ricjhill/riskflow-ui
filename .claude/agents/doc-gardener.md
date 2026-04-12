@@ -15,10 +15,12 @@ Work through each section below. For each check, compare what the documentation 
 
 ### 1. CLAUDE.md — Stack descriptions and commands
 
-Check `package.json` for actual dependency versions and compare against the stack description in CLAUDE.md:
+NOTE: Major version numbers (React, TypeScript, Vite) are checked mechanically by `tools/validate-stack-versions.sh` in CI. This section focuses on descriptive accuracy.
+
+Check `package.json` and compare against the stack description in CLAUDE.md:
 - Do the development commands (`npm run dev`, `npm test`, `npx tsc -b`, etc.) actually exist in `package.json` scripts?
 - Are the descriptions of each tool accurate? (e.g., "Vitest" for testing — is it still Vitest or has it changed?)
-- Do the Docker commands and infrastructure section match reality?
+- Are tools like "React Router", "ESLint", "Prettier" still listed as dependencies?
 
 ### 2. README.md — Command verification
 
