@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.0
+
+### Features
+
+- add concrete deduplication guard to issue-lifecycle agent (#91)
+
+
 ## 0.9.0
 
 ### Features
