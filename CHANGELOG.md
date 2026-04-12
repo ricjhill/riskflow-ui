@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.15.0
+
+### Features
+
+- delegate cleanup skill doc checks to script + agent (#105)
+
+
 ## 0.14.0
 
 ### Features
