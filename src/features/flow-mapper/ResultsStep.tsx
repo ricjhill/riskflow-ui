@@ -8,7 +8,7 @@ interface ResultsStepProps {
 }
 
 function ResultsStep({ onBack, onReset, onFinalised }: ResultsStepProps) {
-  const { session, error, loading, finalise, destroy } = useSessionContext()
+  const { session, error, loading, finalise } = useSessionContext()
 
   if (!session) return <p>No session loaded.</p>
 

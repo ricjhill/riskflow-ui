@@ -139,11 +139,11 @@
 /* --- Legend --- */
 .mapping-legend {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 12px;
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  backdrop-filter: blur(4px);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  padding: 8px 12px;
+  background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 11px;

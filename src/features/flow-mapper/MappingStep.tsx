@@ -80,6 +80,25 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
 
   return (
     <div className="mapping-step">
+      <div className="mapping-legend">
+        <span className="mapping-legend-title">Confidence</span>
+        <span className="mapping-legend-item">
+          <span className="mapping-legend-dot mapping-legend-dot--high" />
+          High (&ge;80%)
+        </span>
+        <span className="mapping-legend-item">
+          <span className="mapping-legend-dot mapping-legend-dot--medium" />
+          Medium (&ge;50%)
+        </span>
+        <span className="mapping-legend-item">
+          <span className="mapping-legend-dot mapping-legend-dot--low" />
+          Low (&gt;0%)
+        </span>
+        <span className="mapping-legend-item">
+          <span className="mapping-legend-dot mapping-legend-dot--none" />
+          None
+        </span>
+      </div>
       <div
         className="mapping-step-canvas"
         style={{ width: '100%', height: 'clamp(400px, 60vh, 700px)' }}
@@ -101,25 +120,6 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
           </Panel>
           <Panel position="top-right" className="mapping-column-label">
             Target Fields
-          </Panel>
-          <Panel position="bottom-left" className="mapping-legend">
-            <span className="mapping-legend-title">Confidence</span>
-            <span className="mapping-legend-item">
-              <span className="mapping-legend-dot mapping-legend-dot--high" />
-              High (&ge;80%)
-            </span>
-            <span className="mapping-legend-item">
-              <span className="mapping-legend-dot mapping-legend-dot--medium" />
-              Medium (&ge;50%)
-            </span>
-            <span className="mapping-legend-item">
-              <span className="mapping-legend-dot mapping-legend-dot--low" />
-              Low (&gt;0%)
-            </span>
-            <span className="mapping-legend-item">
-              <span className="mapping-legend-dot mapping-legend-dot--none" />
-              None
-            </span>
           </Panel>
         </ReactFlow>
       </div>
