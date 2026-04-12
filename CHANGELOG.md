@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.1
+
+### Tests
+
+- add SessionContext tests for provider and throw behavior (#94)
+
+
 ## 0.11.0
 
 ### Features
