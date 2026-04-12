@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.18.1
+
+### Documentation
+
+- update session presentation with complete results
+
+
 ## 0.18.0
 
 ### Features
