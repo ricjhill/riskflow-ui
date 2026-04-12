@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.0
+
+### Features
+
+- allow version-only edits to package.json (#89)
+
+
 ## 0.8.0
 
 ### Features
