@@ -50,4 +50,16 @@ if [ ${PIPESTATUS[0]} -ne 0 ]; then
   exit 2
 fi
 
+# Check for stale generated types (only when type-related files are staged)
+STAGED=$(git diff --cached --name-only 2>/dev/null || true)
+if echo "$STAGED" | grep -qE '(openapi\.json|src/types/)'; then
+  _info "checking generated types freshness..."
+  npm run generate:types 2>/dev/null
+  if ! git diff --exit-code src/types/api.generated.ts > /dev/null 2>&1; then
+    _error "generated types are stale — run: npm run generate:types"
+    git checkout -- src/types/api.generated.ts 2>/dev/null
+    exit 2
+  fi
+fi
+
 # npm audit moved to security-scan.sh (separate hook, separation of concerns)
