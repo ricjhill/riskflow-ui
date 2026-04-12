@@ -185,10 +185,18 @@ describe('markdown links', () => {
     expect(result.stderr).toContain('nonexistent.md')
   })
 
-  it('ignores absolute URLs', () => {
+  it('ignores http URLs', () => {
     setupBase()
     writeFile('docs/guide.md', 'See [github](https://github.com) and [local](../README.md).')
     writeFile('README.md', '# README')
+
+    const result = run()
+    expect(result.exitCode).toBe(0)
+  })
+
+  it('ignores absolute path links', () => {
+    setupBase()
+    writeFile('docs/guide.md', 'See [screenshot](/tmp/screenshot-home.png) for details.')
 
     const result = run()
     expect(result.exitCode).toBe(0)
