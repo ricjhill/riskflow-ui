@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.17.0
+
+### Features
+
+- gate npm audit to only run when dep files are staged (#107)
+
+
 ## 0.16.0
 
 ### Features
