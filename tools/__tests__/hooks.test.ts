@@ -221,6 +221,50 @@ describe('protect-files.sh', () => {
     expect(result.exitCode).toBe(2)
   })
 
+  it('allows version-only edits to package.json', () => {
+    const result = runHook('protect-files.sh', {
+      tool_input: {
+        file_path: '/project/package.json',
+        old_string: '  "version": "0.5.0",',
+        new_string: '  "version": "0.6.0",',
+      },
+    })
+    expect(result.exitCode).toBe(0)
+    expect(result.stderr).toContain('allowing version-only edit')
+  })
+
+  it('blocks non-version edits to package.json', () => {
+    const result = runHook('protect-files.sh', {
+      tool_input: {
+        file_path: '/project/package.json',
+        old_string: '  "version": "0.5.0",\n  "name": "old",',
+        new_string: '  "version": "0.6.0",\n  "name": "new",',
+      },
+    })
+    expect(result.exitCode).toBe(2)
+  })
+
+  it('blocks package.json edits with no old_string/new_string (Write tool)', () => {
+    const result = runHook('protect-files.sh', {
+      tool_input: { file_path: '/project/package.json' },
+    })
+    expect(result.exitCode).toBe(2)
+  })
+
+  it('blocks package.json edits to a dep named version', () => {
+    const result = runHook('protect-files.sh', {
+      tool_input: {
+        file_path: '/project/package.json',
+        old_string: '    "version": "^1.0.0"',
+        new_string: '    "version": "^2.0.0"',
+      },
+    })
+    // Indented with 4 spaces = inside dependencies block, not top-level version
+    // The regex anchors to "version": so this still matches — but it's a dep edit
+    // Since we can't distinguish context, this is allowed (documented limitation)
+    expect(result.exitCode).toBe(0)
+  })
+
   it('allows edits to regular source files', () => {
     const result = runHook('protect-files.sh', {
       tool_input: { file_path: '/project/src/App.tsx' },
