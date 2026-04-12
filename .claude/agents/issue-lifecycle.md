@@ -172,7 +172,27 @@ When asked to audit:
   - A linked PR (if a PR exists)
   - Correct labels
   - Evidence (screenshots/logs for UI issues)
+  - **Required sections in the issue body** (see below)
 - Report gaps
+
+**Issue body structure validation:**
+
+Every issue must have at minimum a `## Problem` section. Check by running:
+```bash
+gh issue view <N> --json body -q '.body'
+```
+
+If the body is missing `## Problem`, post a comment:
+```markdown
+This issue is missing required structure. Please add at minimum:
+
+## Problem
+<!-- What's wrong or what need does this address? -->
+
+See `.github/ISSUE_TEMPLATE/` for full templates.
+```
+
+This check also runs when the agent is invoked after `gh issue create` (via PostToolUse hook).
 
 ## How to find context
 
