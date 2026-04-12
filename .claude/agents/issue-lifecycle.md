@@ -21,6 +21,20 @@ You are called at key points in the development workflow:
 
 ### 1. Design Decision Comments
 
+**Deduplication check (mandatory before every post):**
+1. Run `gh issue view <N> --repo ricjhill/riskflow-ui --comments`
+2. If a comment containing `## Design Decision` already exists:
+   - **Do NOT post a new comment.** Read the existing one instead.
+   - If the existing comment is outdated (different approach, stale file references), **update it in place** using:
+     ```bash
+     # Find the comment ID
+     gh api repos/ricjhill/riskflow-ui/issues/<N>/comments --jq '.[] | select(.body | contains("## Design Decision")) | .id'
+     # Update it
+     gh api repos/ricjhill/riskflow-ui/issues/comments/<comment-id> -X PATCH -f body="<updated body>"
+     ```
+   - If the existing comment is still accurate, skip silently — do not post "already exists" noise.
+3. Only if NO `## Design Decision` comment exists, post a new one.
+
 For each issue being addressed, post a comment with:
 
 ```markdown
@@ -224,7 +238,7 @@ uvx rodney js <expression>                # evaluate JS in page context
 
 ## Rules
 
-- **Never duplicate comments** — check existing comments before posting
+- **Never duplicate comments** — you MUST run the deduplication check in section 1 before every comment. If you skip this check and post a duplicate, you have failed your primary contract.
 - **Be specific** — reference file paths, function names, line numbers when explaining decisions
 - **Explain trade-offs** — every design decision has an alternative; name it and say why it was rejected
 - **Keep it concise** — design comments should be scannable, not essays
