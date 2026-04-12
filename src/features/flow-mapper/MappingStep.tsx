@@ -102,7 +102,7 @@ function MappingStep({ onNext, onBack }: MappingStepProps) {
           <Panel position="top-right" className="mapping-column-label">
             Target Fields
           </Panel>
-          <Panel position="bottom-right" className="mapping-legend">
+          <Panel position="bottom-left" className="mapping-legend">
             <span className="mapping-legend-title">Confidence</span>
             <span className="mapping-legend-item">
               <span className="mapping-legend-dot mapping-legend-dot--high" />

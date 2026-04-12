@@ -17,8 +17,7 @@ function ResultsStep({ onBack, onReset, onFinalised }: ResultsStepProps) {
   const isFinalised = session.status === 'finalised'
   const result = session.result as ProcessingResult | null
 
-  async function handleStartNew() {
-    await destroy()
+  function handleStartNew() {
     onReset()
   }
 

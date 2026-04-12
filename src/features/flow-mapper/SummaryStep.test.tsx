@@ -103,4 +103,21 @@ describe('SummaryStep', () => {
     await user.click(screen.getByRole('button', { name: /start new/i }))
     expect(onReset).toHaveBeenCalled()
   })
+
+  it('shows placeholder when result is null', () => {
+    const sessionNoResult = { ...baseSession, result: null }
+    render(<SummaryStep session={sessionNoResult} onReset={() => {}} />)
+
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('renders empty mapping table when no mappings exist', () => {
+    const sessionNoMappings = { ...baseSession, mappings: [] }
+    render(<SummaryStep session={sessionNoMappings} onReset={() => {}} />)
+
+    expect(screen.getByText('Source')).toBeInTheDocument()
+    expect(screen.getByText('Target')).toBeInTheDocument()
+    expect(screen.queryByText('GWP')).not.toBeInTheDocument()
+  })
 })
