@@ -28,15 +28,8 @@ jobs:
       - name: Run tests with coverage
         run: npx vitest run --coverage
 
-      - name: Assert test count floor
-        run: |
-          COUNT=$(grep -oP '<testsuites[^>]*tests="\K\d+' reports/unit.xml | head -1)
-          FLOOR=50
-          echo "Test count: $COUNT (floor: $FLOOR)"
-          if [ "$COUNT" -lt "$FLOOR" ]; then
-            echo "FAIL: Test count $COUNT is below floor $FLOOR"
-            exit 1
-          fi
+      - name: Assert test count floors per layer
+        run: tools/test-floor-per-layer.sh
 
       - name: Type check
         run: npx tsc -b
