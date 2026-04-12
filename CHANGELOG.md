@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.18.0
+
+### Features
+
+- add staleness detection to issue-lifecycle audit (#108)
+
+
 ## 0.17.0
 
 ### Features
