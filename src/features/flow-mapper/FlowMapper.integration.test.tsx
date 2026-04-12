@@ -18,7 +18,7 @@ describe('FlowMapper', () => {
     renderFlowMapper()
 
     const steps = screen.getAllByRole('listitem')
-    expect(steps).toHaveLength(3)
+    expect(steps).toHaveLength(4)
 
     expect(steps[0]).toHaveTextContent('Upload')
     expect(steps[0]).toHaveAttribute('aria-current', 'step')
@@ -28,6 +28,9 @@ describe('FlowMapper', () => {
 
     expect(steps[2]).toHaveTextContent('Results')
     expect(steps[2]).not.toHaveAttribute('aria-current')
+
+    expect(steps[3]).toHaveTextContent('Summary')
+    expect(steps[3]).not.toHaveAttribute('aria-current')
   })
 
   it('wraps content in a card container', () => {

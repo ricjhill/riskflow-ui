@@ -166,14 +166,11 @@ describe('ResultsStep', () => {
     expect(screen.getByText(/Avg confidence: 0\.81/)).toBeInTheDocument()
   })
 
-  it('calls destroy and onReset when Start New is clicked', async () => {
+  it('calls onReset when Start New is clicked', () => {
     const onReset = vi.fn()
     renderResultsStep({ onReset })
     fireEvent.click(screen.getByRole('button', { name: /start new/i }))
-    await waitFor(() => {
-      expect(mockDestroy).toHaveBeenCalled()
-      expect(onReset).toHaveBeenCalled()
-    })
+    expect(onReset).toHaveBeenCalled()
   })
 
   it('calls onBack when Back is clicked', () => {

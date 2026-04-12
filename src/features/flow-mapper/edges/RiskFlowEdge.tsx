@@ -67,6 +67,7 @@ function RiskFlowEdge({
             position: 'absolute',
             transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
             pointerEvents: 'none',
+            zIndex: 1,
           }}
         >
           {Math.round(confidence * 100)}%
