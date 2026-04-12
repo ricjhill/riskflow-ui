@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.19.1
+
+### Refactors
+
+- move column labels above canvas to prevent node overlap
+
+
 ## 0.19.0
 
 ### Features
