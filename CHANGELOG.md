@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.14.0
+
+### Features
+
+- narrow doc-gardener agent to judgment-only checks (#104)
+
+
 ## 0.13.0
 
 ### Features
