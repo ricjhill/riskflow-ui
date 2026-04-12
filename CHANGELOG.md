@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.11.2
+
+### Documentation
+
+- add presentation for 12 April harness hardening session
+
+
 ## 0.11.1
 
 ### Tests
