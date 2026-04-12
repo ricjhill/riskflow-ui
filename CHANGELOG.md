@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.0
+
+### Features
+
+- add tools/validate-docs.sh with 4 doc freshness checks (#102)
+
+
 ## 0.11.2
 
 ### Documentation
