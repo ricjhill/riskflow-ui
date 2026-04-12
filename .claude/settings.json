@@ -21,12 +21,17 @@
       "Bash(uvx rodney:*)",
       "Read(//home/ric/.claude/plans/**)",
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Bash(bash -c ':*)",
+      "Bash(python3 -c \"import json; print\\(json.dumps\\({'test': 1}\\)\\)\")"
     ],
     "deny": [
       "Edit(package-lock.json)",
       "Edit(.env)",
       "Bash(git push --force:*)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
     ]
   },
   "hooks": {
@@ -95,6 +100,11 @@
             "type": "command",
             "command": ".claude/hooks/post-merge-verify.sh",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-issue-validate.sh",
+            "timeout": 10
           }
         ]
       }
