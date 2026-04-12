@@ -173,7 +173,39 @@ When asked to audit:
   - Correct labels
   - Evidence (screenshots/logs for UI issues)
   - **Required sections in the issue body** (see below)
+  - **Staleness indicators** (see below)
 - Report gaps
+
+**Staleness detection:**
+
+For each open issue, determine its lifecycle state and flag stale items:
+
+1. **Designed but not started:** Issue has a `## Design Decision` comment but no linked PR.
+   ```bash
+   # Check for design comment
+   gh issue view <N> --repo ricjhill/riskflow-ui --comments | grep -q '## Design Decision'
+   # Check for linked PR
+   gh pr list --search "closes #<N> OR fixes #<N>" --repo ricjhill/riskflow-ui --json number,state
+   ```
+   If a design comment exists but no PR (open or merged) references the issue, flag it as **"designed but not started"**.
+
+2. **Stale PR:** Issue has a linked PR that has been open for more than 14 days.
+   ```bash
+   gh pr view <PR_NUM> --json createdAt,state -q '{createdAt: .createdAt, state: .state}'
+   ```
+
+Report staleness as a summary table:
+
+```markdown
+## Staleness Report
+
+| Issue | Status | Design comment | PR | Days idle |
+|-------|--------|---------------|----|-----------|
+| #12   | open   | yes           | —  | 21        |
+| #15   | open   | yes           | #18 (open 30d) | 30 |
+
+**Action needed:** <N> issues are designed but not started. <N> PRs are stale.
+```
 
 **Issue body structure validation:**
 
