@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.16.0
+
+### Features
+
+- add per-layer test count floors, replace global floor (#106)
+
+
 ## 0.15.0
 
 ### Features
