@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.19.0
+
+### Features
+
+- add finalisation summary step with schema and mapping details (#110)
+
+
 ## 0.18.1
 
 ### Documentation
