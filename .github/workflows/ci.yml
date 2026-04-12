@@ -167,6 +167,9 @@ jobs:
       - name: Validate stack versions match CLAUDE.md
         run: tools/validate-stack-versions.sh
 
+      - name: Validate documentation freshness
+        run: tools/validate-docs.sh
+
   boot-test:
     needs: quality
     runs-on: ubuntu-latest
