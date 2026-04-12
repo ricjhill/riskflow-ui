@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.0
+
+### Features
+
+- stale types check, issue ref enforcement, post-merge verify (#90)
+
+
 ## 0.7.0
 
 ### Features
