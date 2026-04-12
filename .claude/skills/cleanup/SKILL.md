@@ -29,9 +29,8 @@ Scan the RiskFlow UI codebase for entropy and open a cleanup PR if needed. This 
 - Verify no `any` types have crept into `src/` (grep for `: any` and `as any`)
 
 ### 5. Documentation freshness
-- Compare `CLAUDE.md` architecture tree against actual directory structure in `src/`
-- Check that `.claude/rules/operating-principles.md` architecture rules match actual layer dependencies
-- Check that `CLAUDE.md` endpoint list matches `src/api/client.ts` exported functions
+1. Run `tools/validate-docs.sh` — if it fails, include the output in the report (covers architecture tree, endpoint count, env vars, markdown links)
+2. Invoke the `doc-gardener` agent for deep checks — include any STALE findings in the report (covers stack descriptions, README commands, infrastructure consistency, rules semantics, skills/agents self-check)
 
 ### 6. Stale patterns
 - Check for `// TODO`, `// FIXME`, `// HACK` comments that were never resolved
