@@ -88,3 +88,13 @@ The **Flow Mapper** is the core user workflow:
 4. **Finalise** — validate all rows against the schema, see errors and valid records
 
 The UI communicates with the RiskFlow API via typed client functions in `src/api/client.ts`. See the [API client reference](docs/reference/api-client.md) for details.
+
+## License
+
+This project is dual-licensed:
+
+- **Open Source:** [GNU General Public License v3.0](LICENSE) — free for open-source use, modification, and distribution under GPL terms.
+- **Commercial:** For use in proprietary or closed-source products without GPL obligations, a commercial license is available. Contact [ricjhill](https://github.com/ricjhill) for details.
+
+© 2025-2026 ricjhill. All rights reserved.
+
