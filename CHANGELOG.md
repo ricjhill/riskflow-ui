@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.19.2
+
+### Other Changes
+
+- Add GPL-3.0 license
+
+
 ## 0.19.1
 
 ### Refactors
