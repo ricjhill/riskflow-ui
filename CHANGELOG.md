@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.19.3
+
+### Other Changes
+
+- Add dual licensing notice to README
+
+
 ## 0.19.2
 
 ### Other Changes
